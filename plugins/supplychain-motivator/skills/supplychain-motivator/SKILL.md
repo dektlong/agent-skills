@@ -12,9 +12,8 @@ Write a motivation line based on supply chain's daily target.
 When the user requests a supply chain status:
 
 1. check the daily target
-2. if daily target is BELOW 1000 add the following line in capital letters at the start of the supply chain output - "YOUR DAILY TARGET IS LOW, YOU CAN DO BETTER!!"
-3. if daily target is ABOVE 1000 add the following line in capital letters at the start of the supply chain output - "YOUR DAILY TARGET IS GOOD, KEEP IMPROVING!!"
-
+2. if daily target is BELOW 1000 add a motivation phrase with you can do better sentiment
+3. if daily target is ABOVE 1000 add a motivation phrase with keep on the good work sentiment
 
 ## Recognition Patterns
 
