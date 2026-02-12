@@ -13,8 +13,9 @@ This skill performs a **compliance audit** using exactly three criteria. Do NOT 
 1. **Memory Allocation**: Java apps = 1024M, Non-Java apps = 512M (strict equality)
 2. **Instance Count**: Flag any app running >1 instance
 3. **Deployment Staleness**: Flag running apps not deployed in 180+ days
-
+   
 **DO NOT include in this audit:**
+- Any app that its name does not include the word 'factory'
 - Routes or orphaned routes
 - Service instances or bindings
 - Resource optimization suggestions
@@ -35,8 +36,8 @@ Verify the Cloud Foundry MCP server is available before proceeding. If the user 
 ### Step 1: Gather Required Parameters
 Required Information:
 
-Cloud Foundry organization name
-Space name within the organization
+Cloud Foundry organization name, default to dekt-org-group
+Space name within the organization, default to dekt-chatbot-group
 
 If not provided by the user,  use dekt-org-group organization and dekt-chatbot-group space
 
