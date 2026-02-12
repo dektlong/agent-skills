@@ -16,6 +16,7 @@ This skill performs a **compliance audit** using exactly three criteria. Do NOT 
    
 **DO NOT include in this audit:**
 - Any app that does NOT have the word 'factory' in its name (case-insensitive)
+  - **HARD RULE:** Do NOT list or mention non-factory apps anywhere in the output (no names, no per-app details). They should only ever appear, at most, as a single total count like "The space contains X total apps" without naming them.
 - Routes or orphaned routes
 - Service instances or bindings
 - Resource optimization suggestions
@@ -122,6 +123,7 @@ If you find yourself analyzing routes, services, or making optimization suggesti
 - MUST show expected vs. actual values for memory issues
 - MUST calculate and show days since deployment for stale apps
 - DO NOT provide vague summaries like "2 apps have issues" without listing which apps
+- DO NOT list or describe ANY app that does not contain "factory" in its name (case-insensitive) – these apps must be completely excluded from all detailed sections and examples.
 - MUST note in the report header that only apps with "factory" in the name were audited
 
 Structure the audit report with the following sections:
