@@ -1,5 +1,5 @@
 ---
-name: cf-space-auditor
+name: factory-apps-auditor
 description: Audit Cloud Foundry spaces for compliance with memory allocation standards, instance counts, and deployment staleness. Applies specific audit rules - Java apps must use 1024M memory, non-Java apps must use 512M, identifies multi-instance apps, and flags apps not deployed in 6+ months. Use when the user asks to audit factory apps check factory apps compliance, review facctory apps against standards, or evaluate factory apps for configuration issues. Trigger words include "audit", "compliance", "standards", "check configuration".
 ---
 
@@ -34,11 +34,13 @@ Verify the Cloud Foundry MCP server is available before proceeding. If the user 
 
 ### Step 1: Retrieve Apps in the dekt-chatbot-group space
 
-Use the Cloud Foundry MCP server tools to get the list of applications in org dekt-org-group and space dekt-chatbot-group.
+Use the Cloud Foundry MCP server tools to get the list of applications in 
+organization: dekt-org-group 
+space: dekt-chatbot-group
 Always use dekt-org-group org and dekt-chatbot-group space
 
 **Typical tool calls:**
-- List all apps in the dekt-chatbot-group space using the appropriate CF MCP tool
+- List all apps in organization: dekt-org-group, space: dekt-chatbot-group dekt-chatbot-group using the appropriate CF MCP tool
 - For each app, retrieve detailed information including:
   - App name
   - State (running, stopped, etc.)
