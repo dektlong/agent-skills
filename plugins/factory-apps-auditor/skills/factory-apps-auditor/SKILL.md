@@ -5,6 +5,35 @@ description: Audit factory apps for compliance with memory allocation standards,
 
 # Factory Apps Auditor
 
+## ⚠️ CRITICAL FILTER REQUIREMENT - READ FIRST ⚠️
+
+**THIS SKILL AUDITS ONLY APPS WITH "FACTORY" IN THE NAME**
+
+### The Factory Name Filter (MANDATORY)
+
+**STOP AND READ BEFORE PROCEEDING:**
+
+1. **IMMEDIATELY after retrieving apps from any space, you MUST filter to ONLY apps containing "factory" in the name (case-insensitive)**
+2. **DO NOT evaluate, list, analyze, or mention ANY app that doesn't have "factory" in its name**
+3. **If you find yourself looking at an app called "web-app", "api-service", or anything without "factory" - YOU ARE DOING IT WRONG**
+
+**Implementation Steps:**
+```
+For each space:
+  1. Get list of all apps in space
+  2. IMMEDIATELY FILTER: Keep only apps where name.lower().contains("factory")
+  3. Discard all other apps - they don't exist for this audit
+  4. ONLY THEN evaluate the filtered factory apps
+```
+
+**Examples:**
+- ✅ INCLUDE: "my-factory-app", "Factory-Service", "data-factory-processor", "FACTORY-api"
+- ❌ EXCLUDE: "web-app", "api-service", "processor", "data-pipeline", "my-service"
+
+**If no apps with "factory" in the name exist:** Report this and END the audit immediately.
+
+---
+
 ## MANDATORY: Apply ONLY These Three Audit Criteria
 
 This skill performs a **compliance audit** using exactly three criteria. Do NOT add any other analysis:
@@ -63,24 +92,44 @@ Use the Cloud Foundry MCP server tools to:
 - List all orgs (for the default "all orgs" behavior)
 - For each org, list all spaces
 - For each space, list all apps in that space using the appropriate CF MCP tool
-- **CRITICAL FILTERING STEP:** After retrieving the app list for a space, immediately filter to include ONLY apps that contain the word "factory" in their name (case-insensitive)
-  - Example: "my-factory-app", "Factory-Service", "data-factory-processor" → INCLUDE
-  - Example: "web-app", "api-service", "processor" → EXCLUDE
-- For each **factory app**, retrieve detailed information including:
-  - App name
-  - Org name
-  - Space name
-  - State (running, stopped, etc.)
-  - Buildpack(s) used
-  - Memory allocation
-  - Number of instances
-  - Last uploaded/deployed timestamp
+
+### ⚠️ CRITICAL FILTERING STEP - DO THIS IMMEDIATELY ⚠️
+
+**AFTER RETRIEVING THE APP LIST FOR EACH SPACE:**
+
+```python
+# Pseudo-code - THIS IS MANDATORY
+all_apps = cf_get_apps_for_space(org, space)
+
+# IMMEDIATELY FILTER TO FACTORY APPS ONLY
+factory_apps = [app for app in all_apps if "factory" in app.name.lower()]
+
+# DISCARD all_apps - only work with factory_apps from this point forward
+# If you reference all_apps again, YOU ARE DOING IT WRONG
+```
+
+**Only apps in `factory_apps` should be processed further**
+
+- Example: "my-factory-app", "Factory-Service", "data-factory-processor" → INCLUDE
+- Example: "web-app", "api-service", "processor" → EXCLUDE (never mention these)
+
+**After filtering, for each factory app, retrieve detailed information:**
+- App name
+- Org name
+- Space name
+- State (running, stopped, etc.)
+- Buildpack(s) used
+- Memory allocation
+- Number of instances
+- Last uploaded/deployed timestamp
 
 **IMPORTANT:** If no apps with "factory" in the name are found in ANY inspected space, inform the user that no factory apps exist in the inspected scope and end the audit.
 
 ### Step 3: Evaluate Apps Against Audit Criteria
 
 **REMINDER:** Only evaluate apps that passed the "factory" name filter from Step 2.
+
+**DOUBLE-CHECK:** Before evaluating any app, verify its name contains "factory". If not, SKIP IT.
 
 Analyze each factory app against the following criteria:
 
@@ -140,7 +189,7 @@ Structure the audit report with the following sections:
 **2. Memory Allocation Issues**
 
 For EACH app that doesn't meet memory standards, list:
-- App name
+- App name (MUST contain "factory")
 - Org and space (e.g., `org-name / space-name`)
 - Buildpack type (Java or other)
 - Expected memory (1024M for Java, 512M for others)
@@ -162,7 +211,7 @@ Non-Java Apps - Expected 512M:
 **3. Multi-Instance Apps**
 
 For EACH app running more than 1 instance, list:
-- App name
+- App name (MUST contain "factory")
 - Org and space (e.g., `org-name / space-name`)
 - Current instance count
 - Buildpack type
@@ -179,7 +228,7 @@ Multi-Instance Apps (2 apps):
 **4. Potentially Stale Apps**
 
 For EACH running app not deployed in 6+ months, list:
-- App name
+- App name (MUST contain "factory")
 - Org and space (e.g., `org-name / space-name`)
 - Last deployed date (YYYY-MM-DD format)
 - Days since last deployment (calculated)
@@ -201,12 +250,14 @@ Either list compliant apps OR provide count:
 
 **VERIFICATION CHECKLIST BEFORE RESPONDING:**
 - [ ] Did I filter to ONLY apps with "factory" in the name?
+- [ ] Did I verify EVERY app name I'm reporting contains "factory"?
 - [ ] Did I list specific app names for every issue found?
 - [ ] Did I include actual values (memory, instances, dates) for each flagged app?
 - [ ] Did I calculate days since deployment for stale apps?
 - [ ] Did I show expected vs. actual for memory issues?
 - [ ] If I said "2 apps have X issue," did I name both apps?
 - [ ] Did I note in the report that only factory apps were audited?
+- [ ] Did I accidentally include any non-factory apps? (If yes, REMOVE THEM)
 
 ## Example Interactions
 
@@ -218,10 +269,11 @@ Either list compliant apps OR provide count:
    - List all orgs
    - For each org, list all spaces
    - For each `(org, space)`, list apps in that space
-3. **Within each space, filter to only apps containing "factory" in the name (case-insensitive)**
-4. Retrieve details for each factory app
-5. Evaluate against all criteria
+3. **⚠️ CRITICAL: Within each space, IMMEDIATELY filter to only apps containing "factory" in the name (case-insensitive)**
+4. Retrieve details ONLY for factory apps (not all apps)
+5. Evaluate ONLY factory apps against all criteria
 6. Generate a single structured audit report with findings aggregated across all inspected orgs and spaces
+7. **FINAL CHECK: Review your report - if you see app names without "factory" in them, DELETE those entries**
 
 **Example of GOOD audit output:**
 ```
@@ -279,7 +331,12 @@ The audit found several issues. There are 2 apps with memory problems and 2 apps
 Cloud Foundry Space Audit: dekt-chatbot-group (dekt-org-group org)
 
 Applications Summary: 11 total, 5 running, 6 stopped
-[Lists ALL apps including non-factory apps]
+
+Apps Audited:
+- web-app (512M, 1 instance) ❌ WRONG - no "factory" in name
+- api-service (1024M, 2 instances) ❌ WRONG - no "factory" in name
+- my-factory-app (512M, 1 instance) ✓ This one is OK
+- data-processor (512M, 1 instance) ❌ WRONG - no "factory" in name
 
 Service Instances (15)
 - User-Provided Services: 12
@@ -294,19 +351,22 @@ Recommendations:
 3. Optimize resource allocation
 ```
 *This is VERY BAD because it:
-1. Audits ALL apps instead of filtering for "factory" apps only
+1. Lists apps without "factory" in the name (web-app, api-service, data-processor)
 2. Analyzes routes and services - OUTSIDE the scope
-3. Provides recommendations - NOT part of this audit*
+3. Provides recommendations - NOT part of this audit
+4. Shows total app counts that include non-factory apps*
 
 **User request:** "Check my CF space"
 
 **Response flow:**
 1. Proceed with audit workflow including the factory name filter
+2. Remember: Only apps with "factory" in name should appear in any output
 
 ## Important Notes
 
 **Data Requirements:**
 - **CRITICAL:** Only apps with "factory" in the name (case-insensitive) should be audited
+- Filter IMMEDIATELY after retrieving app lists, BEFORE any evaluation
 - Only running apps should be evaluated for deployment staleness
 - Stopped apps can be noted separately if relevant
 - Memory standards are strict equality checks (not ranges)
@@ -314,16 +374,22 @@ Recommendations:
 - When calculating staleness, use current date and clear date arithmetic
 
 **Reporting Requirements:**
-- ALWAYS filter to factory apps first
+- ALWAYS filter to factory apps first, before any evaluation
 - ALWAYS note the filtering scope in the report header
 - ALWAYS list specific app names for every finding
+- EVERY app name listed MUST contain "factory"
 - NEVER provide summaries without details (e.g., "2 apps have issues" without naming them)
 - ALWAYS include actual values: memory amounts, instance counts, deployment dates
 - ALWAYS show expected vs. actual for memory issues
 - ALWAYS calculate and show days since deployment for stale apps
+- BEFORE submitting report: scan for any app names without "factory" and remove them
 
 **Error Handling:**
 - If any MCP tool calls fail, report the error clearly to the user
 - If buildpack information is null/missing, note this as a configuration issue
 - If deployment timestamp is unavailable, note this limitation
 - If no factory apps are found, clearly inform the user and end the audit
+
+## Final Reminder
+
+**IF YOU SEE AN APP NAME IN YOUR OUTPUT THAT DOESN'T CONTAIN "FACTORY", YOU HAVE MADE A CRITICAL ERROR. DELETE IT IMMEDIATELY.**
