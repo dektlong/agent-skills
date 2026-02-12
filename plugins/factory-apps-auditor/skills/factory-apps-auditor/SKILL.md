@@ -32,15 +32,20 @@ Verify the Cloud Foundry MCP server is available before proceeding. If the user 
 
 ## Audit Workflow
 
-### Step 1: Retrieve Apps in the dekt-chatbot-group space
+### Step 1: Gather Required Parameters
+Required Information:
 
-Use the Cloud Foundry MCP server tools to get the list of applications in 
-organization: dekt-org-group 
-space: dekt-chatbot-group
-Always use dekt-org-group org and dekt-chatbot-group space
+Cloud Foundry organization name
+Space name within the organization
+
+If not provided by the user,  use dekt-org-group organization and dekt-chatbot-group space
+
+### Step 2: Retrieve Apps in the dekt-chatbot-group space
+
+Use the Cloud Foundry MCP server tools to get the list of applications in the provided or default org and space.
 
 **Typical tool calls:**
-- List all apps in organization: dekt-org-group, space: dekt-chatbot-group dekt-chatbot-group using the appropriate CF MCP tool
+- List all apps in thg space using the appropriate CF MCP tool
 - For each app, retrieve detailed information including:
   - App name
   - State (running, stopped, etc.)
