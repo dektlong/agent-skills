@@ -211,13 +211,16 @@ Either list compliant apps OR provide count:
 
 **User request:** "audit factory apps"
 
-**Response flow:**
-1. Confirm org is "dekt-org-group" and space is "dekt-chatbot-group"
-2. Use CF MCP tools to list apps in dekt-org-group/dekt-chatbot-group
-3. **Filter to only apps containing "factory" in the name (case-insensitive)**
+**Response flow (default, all orgs and spaces):**
+1. Determine whether the user restricted scope; if not, plan to audit **all accessible orgs and spaces**.
+2. Use CF MCP tools to:
+   - List all orgs
+   - For each org, list all spaces
+   - For each `(org, space)`, list apps in that space
+3. **Within each space, filter to only apps containing "factory" in the name (case-insensitive)**
 4. Retrieve details for each factory app
 5. Evaluate against all criteria
-6. Generate structured audit report with findings
+6. Generate a single structured audit report with findings aggregated across all inspected orgs and spaces
 
 **Example of GOOD audit output:**
 ```
@@ -252,13 +255,14 @@ Potentially Stale Apps (2 apps):
 Compliant Apps: None - all factory apps have at least one issue.
 ```
 
-**Example when no factory apps exist:**
+**Example when no factory apps exist anywhere in scope:**
 ```
 Factory Apps Audit Report
-(dekt-chatbot-group space, dekt-org-group org)
 
-No apps with 'factory' in the name were found in this space. 
-The space contains 8 total apps, but none match the factory naming pattern.
+Scope: Only apps with 'factory' in the name
+
+No apps with 'factory' in the name were found in any inspected org/space.
+The inspected scope contains 24 total apps, but none match the factory naming pattern.
 
 Audit cannot proceed - no factory apps to evaluate.
 ```
