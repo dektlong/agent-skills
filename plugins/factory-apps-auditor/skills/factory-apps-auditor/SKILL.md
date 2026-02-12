@@ -34,31 +34,47 @@ Verify the Cloud Foundry MCP server is available before proceeding. If the user 
 ## Audit Workflow
 
 ### Step 1: Gather Required Parameters
-Required Information:
+Primary behavior:
 
-Cloud Foundry organization name, default to dekt-org-group
-Space name within the organization, default to dekt-chatbot-group
+- **By default, audit ALL accessible orgs and spaces.**
+- If the user explicitly restricts scope (e.g., a specific org, a list of orgs, a specific space, or a list of spaces), only audit within that scope.
 
-If not provided by the user, use dekt-org-group organization and dekt-chatbot-group space
+Examples of user scope:
+- "Audit factory apps in all spaces" → audit all orgs and all spaces you can see.
+- "Audit factory apps in org `foo-org`" → audit all spaces in `foo-org` only.
+- "Audit factory apps in space `bar-space` in org `foo-org`" → audit only that single space.
+
+Implementation guidance:
+- Use the CF MCP tools to:
+  - List organizations (for the default all-orgs behavior).
+  - For each selected organization, list spaces.
+  - For each selected space, list apps.
+  - Then apply the factory-name filter and audit criteria below.
 
 ### Step 2: Retrieve and Filter Apps
 
-Use the Cloud Foundry MCP server tools to get the list of applications in the provided or default org and space.
+Use the Cloud Foundry MCP server tools to:
+- Determine the set of orgs and spaces to inspect based on Step 1.
+- For each `(org, space)` pair in that set, get the list of applications.
 
 **Typical tool calls:**
-- List all apps in the space using the appropriate CF MCP tool
-- **CRITICAL FILTERING STEP:** After retrieving the app list, immediately filter to include ONLY apps that contain the word "factory" in their name (case-insensitive)
+- List all orgs (for the default "all orgs" behavior)
+- For each org, list all spaces
+- For each space, list all apps in that space using the appropriate CF MCP tool
+- **CRITICAL FILTERING STEP:** After retrieving the app list for a space, immediately filter to include ONLY apps that contain the word "factory" in their name (case-insensitive)
   - Example: "my-factory-app", "Factory-Service", "data-factory-processor" → INCLUDE
   - Example: "web-app", "api-service", "processor" → EXCLUDE
 - For each **factory app**, retrieve detailed information including:
   - App name
+  - Org name
+  - Space name
   - State (running, stopped, etc.)
   - Buildpack(s) used
   - Memory allocation
   - Number of instances
   - Last uploaded/deployed timestamp
 
-**IMPORTANT:** If no apps with "factory" in the name are found, inform the user that no factory apps exist in the space and end the audit.
+**IMPORTANT:** If no apps with "factory" in the name are found in ANY inspected space, inform the user that no factory apps exist in the inspected scope and end the audit.
 
 ### Step 3: Evaluate Apps Against Audit Criteria
 
@@ -112,7 +128,7 @@ Structure the audit report with the following sections:
 
 **1. Audit Summary**
 - Scope: "Only apps with 'factory' in the name"
-- Total factory apps audited (count)
+- Total factory apps audited (count, across all inspected orgs and spaces)
 - Apps with memory allocation issues (count + will be listed below)
 - Apps running multiple instances (count + will be listed below)
 - Apps potentially stale (count + will be listed below)
@@ -122,6 +138,7 @@ Structure the audit report with the following sections:
 
 For EACH app that doesn't meet memory standards, list:
 - App name
+- Org and space (e.g., `org-name / space-name`)
 - Buildpack type (Java or other)
 - Expected memory (1024M for Java, 512M for others)
 - Actual memory allocation
@@ -143,6 +160,7 @@ Non-Java Apps - Expected 512M:
 
 For EACH app running more than 1 instance, list:
 - App name
+- Org and space (e.g., `org-name / space-name`)
 - Current instance count
 - Buildpack type
 - State
@@ -159,6 +177,7 @@ Multi-Instance Apps (2 apps):
 
 For EACH running app not deployed in 6+ months, list:
 - App name
+- Org and space (e.g., `org-name / space-name`)
 - Last deployed date (YYYY-MM-DD format)
 - Days since last deployment (calculated)
 - Buildpack type
