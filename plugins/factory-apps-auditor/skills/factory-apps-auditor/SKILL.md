@@ -37,11 +37,12 @@ Verify the Cloud Foundry MCP server is available before proceeding. If the user 
 ### Step 1: Gather Required Parameters
 Primary behavior:
 
-- **By default, audit ALL accessible orgs and spaces.**
-- If the user explicitly restricts scope (e.g., a specific org, a list of orgs, a specific space, or a list of spaces), only audit within that scope.
+- **By default, audit ALL spaces within org `dekt-org-group`.**
+- Do NOT inspect any other org unless the user explicitly asks for a different org.
+- If the user restricts scope further (e.g., a specific space or list of spaces within an org), only audit within that narrower scope.
 
 Examples of user scope:
-- "Audit factory apps in all spaces" → audit all orgs and all spaces you can see.
+- "Audit factory apps in all spaces" → audit all spaces in `dekt-org-group`.
 - "Audit factory apps in org `foo-org`" → audit all spaces in `foo-org` only.
 - "Audit factory apps in space `bar-space` in org `foo-org`" → audit only that single space.
 
