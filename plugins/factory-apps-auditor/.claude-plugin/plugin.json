@@ -1,0 +1,12 @@
+{
+  "name": "factory-apps-auditor",
+  "description": "Audit apps for compliance with memory allocation standards, instance counts, and deployment staleness. Use when the user asks to audit factor apps or check factory apps compliance.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Dekel Tankel"
+  },
+  "keywords": ["factory apps", "audit", "compliance"],
+  "license": "MIT",
+  "skills": ["./skills/factory-apps-auditor"]
+}
+
