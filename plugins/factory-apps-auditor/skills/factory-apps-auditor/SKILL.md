@@ -1,9 +1,9 @@
 ---
 name: cf-space-auditor
-description: Audit Cloud Foundry spaces for compliance with memory allocation standards, instance counts, and deployment staleness. Applies specific audit rules - Java apps must use 1024M memory, non-Java apps must use 512M, identifies multi-instance apps, and flags apps not deployed in 6+ months. Use when the user asks to "audit" a CF space, check space compliance, review space against standards, or evaluate apps for configuration issues. Trigger words include "audit", "compliance", "standards", "check configuration".
+description: Audit Cloud Foundry spaces for compliance with memory allocation standards, instance counts, and deployment staleness. Applies specific audit rules - Java apps must use 1024M memory, non-Java apps must use 512M, identifies multi-instance apps, and flags apps not deployed in 6+ months. Use when the user asks to audit factory apps check factory apps compliance, review facctory apps against standards, or evaluate factory apps for configuration issues. Trigger words include "audit", "compliance", "standards", "check configuration".
 ---
 
-# Cloud Foundry Space Auditor
+# Factory Apps Space Auditor
 
 ## MANDATORY: Apply ONLY These Three Audit Criteria
 
@@ -24,7 +24,7 @@ This skill performs a **compliance audit** using exactly three criteria. Do NOT 
 
 **If the user wants general space analysis:** This is the WRONG skill. Use CF MCP tools conversationally without this skill.
 
-**This skill triggers when:** User says "audit" + space name, OR asks to check compliance/standards.
+**This skill triggers when:** User says "audit" factory apps, OR asks to check compliance/standards.
 
 ## Prerequisites
 
@@ -32,23 +32,12 @@ Verify the Cloud Foundry MCP server is available before proceeding. If the user 
 
 ## Audit Workflow
 
-### Step 1: Gather Required Parameters
+### Step 1: Retrieve Apps in the dekt-chatbot-group space
 
-**Required Information:**
-- Cloud Foundry organization name
-- Space name within the organization
-
-**If not provided by the user:**
-Ask the user to provide both the organization name and space name before proceeding.
-
-Example: "To audit the space, I need two pieces of information: (1) the Cloud Foundry organization name, and (2) the space name. Could you provide both?"
-
-### Step 2: Retrieve Apps in the Space
-
-Use the Cloud Foundry MCP server tools to get the list of applications in the specified org and space.
+Use the Cloud Foundry MCP server tools to get the list of applications in org dekt-org-group and space dekt-chatbot-group.
 
 **Typical tool calls:**
-- List all apps in the space using the appropriate CF MCP tool
+- List all apps in the dekt-chatbot-group space using the appropriate CF MCP tool
 - For each app, retrieve detailed information including:
   - App name
   - State (running, stopped, etc.)
@@ -179,11 +168,11 @@ Either list compliant apps OR provide count:
 
 ## Example Interactions
 
-**User request:** "Audit the development space in our production org"
+**User request:** "audit factory apps"
 
 **Response flow:**
-1. Confirm org is "production" and space is "development"
-2. Use CF MCP tools to list apps in production/development
+1. Confirm org is "dekt-org-group" and space is "dekt-chatbot-group"
+2. Use CF MCP tools to list apps in dekt-org-group/dekt-chatbot-group
 3. Retrieve details for each app
 4. Evaluate against all criteria
 5. Generate structured audit report with findings
@@ -248,9 +237,7 @@ Recommendations:
 **User request:** "Check my CF space"
 
 **Response flow:**
-1. Ask: "To audit your space, I need the organization name and space name. Could you provide both?"
-2. Wait for user to provide details
-3. Proceed with audit workflow
+1. Proceed with audit workflow
 
 ## Important Notes
 
