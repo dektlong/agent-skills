@@ -1,6 +1,6 @@
 ---
 name: factory-apps-auditor
-description: Audit factory apps for compliance with memory allocation standards, instance counts, and deployment staleness. Applies specific audit rules - Java apps must use 1024M memory, non-Java apps must use 512M, identifies multi-instance apps, and flags apps not deployed in 6+ months. Use when the user asks to audit factory apps check factory apps compliance, review facctory apps against standards, or evaluate factory apps for configuration issues. Trigger words include "audit", "compliance", "standards", "check configuration".
+description: Audit factory apps for compliance with memory allocation standards, instance counts, and deployment staleness. Applies specific audit rules - Java apps must use 1024M memory, non-Java apps must use 512M, identifies multi-instance apps, and flags apps not deployed in 6+ months. Use when the user asks to audit factory apps check factory apps compliance, review factory apps against standards, or evaluate factory apps for configuration issues. Trigger words include "audit", "compliance", "standards", "check configuration".
 ---
 
 # Factory Apps Auditor
@@ -15,7 +15,7 @@ This skill performs a **compliance audit** using exactly three criteria. Do NOT 
 3. **Deployment Staleness**: Flag running apps not deployed in 180+ days
    
 **DO NOT include in this audit:**
-- Any app that its name does not include the word 'factory'
+- Any app that does NOT have the word 'factory' in its name (case-insensitive)
 - Routes or orphaned routes
 - Service instances or bindings
 - Resource optimization suggestions
@@ -39,15 +39,18 @@ Required Information:
 Cloud Foundry organization name, default to dekt-org-group
 Space name within the organization, default to dekt-chatbot-group
 
-If not provided by the user,  use dekt-org-group organization and dekt-chatbot-group space
+If not provided by the user, use dekt-org-group organization and dekt-chatbot-group space
 
-### Step 2: Retrieve Apps in the dekt-chatbot-group space
+### Step 2: Retrieve and Filter Apps
 
 Use the Cloud Foundry MCP server tools to get the list of applications in the provided or default org and space.
 
 **Typical tool calls:**
-- List all apps in thg space using the appropriate CF MCP tool
-- For each app, retrieve detailed information including:
+- List all apps in the space using the appropriate CF MCP tool
+- **CRITICAL FILTERING STEP:** After retrieving the app list, immediately filter to include ONLY apps that contain the word "factory" in their name (case-insensitive)
+  - Example: "my-factory-app", "Factory-Service", "data-factory-processor" → INCLUDE
+  - Example: "web-app", "api-service", "processor" → EXCLUDE
+- For each **factory app**, retrieve detailed information including:
   - App name
   - State (running, stopped, etc.)
   - Buildpack(s) used
@@ -55,9 +58,13 @@ Use the Cloud Foundry MCP server tools to get the list of applications in the pr
   - Number of instances
   - Last uploaded/deployed timestamp
 
+**IMPORTANT:** If no apps with "factory" in the name are found, inform the user that no factory apps exist in the space and end the audit.
+
 ### Step 3: Evaluate Apps Against Audit Criteria
 
-Analyze each app against the following criteria:
+**REMINDER:** Only evaluate apps that passed the "factory" name filter from Step 2.
+
+Analyze each factory app against the following criteria:
 
 #### Memory Allocation Standards
 
@@ -89,7 +96,7 @@ Analyze each app against the following criteria:
 ### Step 4: Generate Audit Report
 
 **CRITICAL REMINDER - AUDIT SCOPE:**
-This audit covers ONLY apps and ONLY three criteria (memory, instances, staleness).
+This audit covers ONLY apps with "factory" in the name and ONLY three criteria (memory, instances, staleness).
 DO NOT include: routes, services, resource optimization, or any recommendations.
 If you find yourself analyzing routes, services, or making optimization suggestions, STOP - you are outside the scope of this skill.
 
@@ -99,11 +106,13 @@ If you find yourself analyzing routes, services, or making optimization suggesti
 - MUST show expected vs. actual values for memory issues
 - MUST calculate and show days since deployment for stale apps
 - DO NOT provide vague summaries like "2 apps have issues" without listing which apps
+- MUST note in the report header that only apps with "factory" in the name were audited
 
 Structure the audit report with the following sections:
 
 **1. Audit Summary**
-- Total apps audited (count)
+- Scope: "Only apps with 'factory' in the name"
+- Total factory apps audited (count)
 - Apps with memory allocation issues (count + will be listed below)
 - Apps running multiple instances (count + will be listed below)
 - Apps potentially stale (count + will be listed below)
@@ -123,11 +132,11 @@ Example format:
 Memory Allocation Issues (3 apps):
 
 Java Apps - Expected 1024M:
-- app-name-1: 512M (should be 1024M) - RUNNING
-- app-name-2: 2048M (should be 1024M) - STOPPED
+- my-factory-app: 512M (should be 1024M) - RUNNING
+- factory-service-2: 2048M (should be 1024M) - STOPPED
 
 Non-Java Apps - Expected 512M:
-- app-name-3: 1024M (should be 512M) - RUNNING
+- data-factory-processor: 1024M (should be 512M) - RUNNING
 ```
 
 **3. Multi-Instance Apps**
@@ -142,8 +151,8 @@ Example format:
 ```
 Multi-Instance Apps (2 apps):
 
-- app-name-1: 3 instances (Java buildpack) - RUNNING
-- app-name-2: 2 instances (Python buildpack) - RUNNING
+- my-factory-app: 3 instances (Java buildpack) - RUNNING
+- factory-worker: 2 instances (Python buildpack) - RUNNING
 ```
 
 **4. Potentially Stale Apps**
@@ -158,22 +167,24 @@ Example format:
 ```
 Potentially Stale Apps (2 apps):
 
-- app-name-1: Last deployed 2024-03-15 (274 days ago) - Java buildpack
-- app-name-2: Last deployed 2024-01-10 (339 days ago) - Python buildpack
+- legacy-factory-api: Last deployed 2024-03-15 (274 days ago) - Java buildpack
+- old-factory-processor: Last deployed 2024-01-10 (339 days ago) - Python buildpack
 ```
 
 **5. Compliant Apps** (optional, can be summary)
 
 Either list compliant apps OR provide count:
-- "3 apps are fully compliant with all standards"
+- "3 factory apps are fully compliant with all standards"
 - Or list specific app names if count is small
 
 **VERIFICATION CHECKLIST BEFORE RESPONDING:**
+- [ ] Did I filter to ONLY apps with "factory" in the name?
 - [ ] Did I list specific app names for every issue found?
 - [ ] Did I include actual values (memory, instances, dates) for each flagged app?
 - [ ] Did I calculate days since deployment for stale apps?
 - [ ] Did I show expected vs. actual for memory issues?
 - [ ] If I said "2 apps have X issue," did I name both apps?
+- [ ] Did I note in the report that only factory apps were audited?
 
 ## Example Interactions
 
@@ -182,39 +193,53 @@ Either list compliant apps OR provide count:
 **Response flow:**
 1. Confirm org is "dekt-org-group" and space is "dekt-chatbot-group"
 2. Use CF MCP tools to list apps in dekt-org-group/dekt-chatbot-group
-3. Retrieve details for each app
-4. Evaluate against all criteria
-5. Generate structured audit report with findings
+3. **Filter to only apps containing "factory" in the name (case-insensitive)**
+4. Retrieve details for each factory app
+5. Evaluate against all criteria
+6. Generate structured audit report with findings
 
 **Example of GOOD audit output:**
 ```
-Factory Apps Audit: (dekt-chatbot-group space, dekt-org-group org)
+Factory Apps Audit Report
+(dekt-chatbot-group space, dekt-org-group org)
+Scope: Only apps with 'factory' in the name
 
 Audit Summary:
-- Total apps audited: 8
+- Total factory apps audited: 5
 - Memory allocation issues: 2 apps
 - Multi-instance apps: 1 app
 - Potentially stale apps: 2 apps
-- Fully compliant: 3 apps
+- Fully compliant: 0 apps
 
 Memory Allocation Issues (2 apps):
 
 Java Apps - Expected 1024M:
-- legacy-api: 512M (should be 1024M) - RUNNING
+- legacy-factory-api: 512M (should be 1024M) - RUNNING
 
 Non-Java Apps - Expected 512M:
-- python-worker: 1024M (should be 512M) - RUNNING
+- python-factory-worker: 1024M (should be 512M) - RUNNING
 
 Multi-Instance Apps (1 app):
 
-- critical-service: 3 instances (Java buildpack) - RUNNING
+- critical-factory-service: 3 instances (Java buildpack) - RUNNING
 
 Potentially Stale Apps (2 apps):
 
-- legacy-api: Last deployed 2024-03-15 (274 days ago) - Java buildpack
-- old-processor: Last deployed 2024-02-01 (316 days ago) - Python buildpack
+- legacy-factory-api: Last deployed 2024-03-15 (274 days ago) - Java buildpack
+- old-factory-processor: Last deployed 2024-02-01 (316 days ago) - Python buildpack
 
-Compliant Apps: 3 apps are fully compliant with all standards.
+Compliant Apps: None - all factory apps have at least one issue.
+```
+
+**Example when no factory apps exist:**
+```
+Factory Apps Audit Report
+(dekt-chatbot-group space, dekt-org-group org)
+
+No apps with 'factory' in the name were found in this space. 
+The space contains 8 total apps, but none match the factory naming pattern.
+
+Audit cannot proceed - no factory apps to evaluate.
 ```
 
 **Example of BAD audit output (DO NOT DO THIS):**
@@ -225,9 +250,10 @@ The audit found several issues. There are 2 apps with memory problems and 2 apps
 
 **Example of VERY BAD audit output - SCOPE VIOLATION (NEVER DO THIS):**
 ```
-Cloud Foundry Space Audit: corbyp (solution-architects org)
+Cloud Foundry Space Audit: dekt-chatbot-group (dekt-org-group org)
 
 Applications Summary: 11 total, 5 running, 6 stopped
+[Lists ALL apps including non-factory apps]
 
 Service Instances (15)
 - User-Provided Services: 12
@@ -241,16 +267,20 @@ Recommendations:
 2. Review stopped applications
 3. Optimize resource allocation
 ```
-*This is VERY BAD because it analyzes routes, services, and provides recommendations - all OUTSIDE the scope of this audit. This skill should ONLY analyze apps against the three criteria.*
+*This is VERY BAD because it:
+1. Audits ALL apps instead of filtering for "factory" apps only
+2. Analyzes routes and services - OUTSIDE the scope
+3. Provides recommendations - NOT part of this audit*
 
 **User request:** "Check my CF space"
 
 **Response flow:**
-1. Proceed with audit workflow
+1. Proceed with audit workflow including the factory name filter
 
 ## Important Notes
 
 **Data Requirements:**
+- **CRITICAL:** Only apps with "factory" in the name (case-insensitive) should be audited
 - Only running apps should be evaluated for deployment staleness
 - Stopped apps can be noted separately if relevant
 - Memory standards are strict equality checks (not ranges)
@@ -258,6 +288,8 @@ Recommendations:
 - When calculating staleness, use current date and clear date arithmetic
 
 **Reporting Requirements:**
+- ALWAYS filter to factory apps first
+- ALWAYS note the filtering scope in the report header
 - ALWAYS list specific app names for every finding
 - NEVER provide summaries without details (e.g., "2 apps have issues" without naming them)
 - ALWAYS include actual values: memory amounts, instance counts, deployment dates
@@ -268,3 +300,4 @@ Recommendations:
 - If any MCP tool calls fail, report the error clearly to the user
 - If buildpack information is null/missing, note this as a configuration issue
 - If deployment timestamp is unavailable, note this limitation
+- If no factory apps are found, clearly inform the user and end the audit
