@@ -25,12 +25,16 @@ Verify the Cloud Foundry MCP server is available. If not configured, tell the us
 
 ## Audit Workflow
 
-### Step 1: Enumerate spaces in dekt-group-org
+**CRITICAL:** The audit must include **every** app in org `dekt-group-org`. That means querying **every** space in that org (no spaces skipped) and getting the application list for **each** of those spaces. Missing a space = missing apps = incomplete audit.
 
-- **Scope is org `dekt-group-org` only.** Inspect all spaces in that org; do not inspect any other organization.
-- Use CF MCP tools to:
-  - List all spaces in organization **`dekt-group-org`**.
-  - For each space in `dekt-group-org`, get the list of applications (pass org `dekt-group-org` and the space name to the apps list tool).
+### Step 1: Enumerate ALL spaces and get ALL apps (do not skip any)
+
+- **Scope is org `dekt-group-org` only.** You must include every space in this org and every app in each of those spaces.
+- **Mandatory workflow:**
+  1. Call the CF MCP tool to **list spaces** with `organization: "dekt-group-org"`. Note the full list of space names returned.
+  2. **For every space** in that list (do not skip any, do not sample), call the CF MCP tool to **list applications** with `organization: "dekt-group-org"` and `space: "<that space name>"`.
+  3. Collect apps from all spaces into one combined set. You must have requested the app list for **each** space in dekt-group-org; if you skipped a space, the audit is incomplete.
+- **Do not** assume only certain spaces have factory apps; **do not** skip spaces; **do not** use a subset of spaces. Every space in the org must be queried so that all apps in dekt-group-org are considered.
 
 ### Step 2: Filter to factory apps only
 
@@ -38,7 +42,7 @@ After retrieving apps for each space:
 
 - **Keep only** apps where the name contains `"factory"` (case-insensitive).
 - Discard all other apps; do not list or mention them by name in the report.
-- For each factory app, get app details (e.g. `applicationDetails`) including **memory allocation** (in MB).
+- For each factory app, get app details (e.g. `applicationDetails`) including **memory allocation** (in MB). **Always pass** `organization: "dekt-group-org"` and `space: "<the app's space>"` when calling application details so the correct app is retrieved (app names can repeat across spaces).
 
 Examples:
 - INCLUDE: "my-factory-app", "Factory-Service", "data-factory-processor"
@@ -58,16 +62,19 @@ For each factory app:
 **Report structure:**
 
 1. **Scope**: "Org dekt-group-org, all spaces. Only apps with 'factory' in the name."
-2. **Summary**: Total factory apps audited; count exceeding 1GB; count compliant (≤1GB).
-3. **Apps exceeding 1GB** (if any): For each, list:
+2. **Spaces inspected**: List the number and names of spaces in dekt-group-org that were queried (e.g. "Spaces inspected: 5 (space-a, space-b, ...)"). This confirms every space was included.
+3. **Summary**: Total factory apps audited; count exceeding 1GB; count compliant (≤1GB).
+4. **Apps exceeding 1GB** (if any): For each, list:
    - App name
    - Org / space
    - Allocated memory (e.g. 2048M)
    - **Recommendation: Reduce the application memory** (to 1GB or less).
-4. **Compliant factory apps** (optional): Count or short list.
+5. **Compliant factory apps** (optional): Count or short list.
 
 **Verification before responding:**
 
+- [ ] I called the apps list tool **once per space** in dekt-group-org (no spaces skipped).
+- [ ] I used explicit `organization: "dekt-group-org"` and `space: "<name>"` on every list/detail call (no default target).
 - [ ] Only org `dekt-group-org` and all its spaces were considered.
 - [ ] Only factory-named apps were evaluated and listed.
 - [ ] Every app over 1GB is named with its actual memory and includes the recommendation to reduce memory.
@@ -78,6 +85,8 @@ For each factory app:
 ```
 Factory Audit (memory cap 1GB)
 Scope: Org dekt-group-org, all spaces. Only apps with 'factory' in the name.
+
+Spaces inspected: 5 (space-a, space-b, space-c, space-d, space-e)
 
 Summary:
 - Factory apps audited: 8
