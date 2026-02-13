@@ -1,9 +1,13 @@
 ---
 name: factory-audit
-description: Finds Cloud Foundry apps with "factory" in the name across all orgs and all spaces, flags apps whose memory exceeds 1GB, and recommends reducing application memory. Use when the user asks to audit factory apps memory, find factory apps over 1GB, check factory app memory across all orgs/spaces, or run a factory memory audit.
+description: Finds Cloud Foundry apps with "factory" in the name across all orgs and all spaces, flags apps whose memory exceeds 1GB, and recommends reducing application memory. Use when the user says "audit factory apps", asks to audit factory apps memory, find factory apps over 1GB, check factory app memory across all orgs/spaces, or run a factory memory audit.
 ---
 
 # Factory Audit
+
+## When to use
+
+This skill runs when the user says **"audit factory apps"** or asks to audit factory apps (memory), find factory apps over 1GB, or check factory app memory across orgs/spaces.
 
 ## Purpose
 
