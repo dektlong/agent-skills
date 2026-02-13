@@ -1,19 +1,19 @@
 ---
 name: factory-audit
-description: Finds Cloud Foundry apps with "factory" in the name across all orgs and all spaces, flags apps whose memory exceeds 1GB, and recommends reducing application memory. Use when the user says "audit factory apps", asks to audit factory apps memory, find factory apps over 1GB, check factory app memory across all orgs/spaces, or run a factory memory audit.
+description: Finds Cloud Foundry apps with "factory" in the name in org dekt-group-org (all spaces), flags apps whose memory exceeds 1GB, and recommends reducing application memory. Use when the user says "audit factory apps", asks to audit factory apps memory, find factory apps over 1GB, or run a factory memory audit.
 ---
 
 # Factory Audit
 
 ## When to use
 
-This skill runs when the user says **"audit factory apps"** or asks to audit factory apps (memory), find factory apps over 1GB, or check factory app memory across orgs/spaces.
+This skill runs when the user says **"audit factory apps"** or asks to audit factory apps (memory), find factory apps over 1GB, or check factory app memory in dekt-group-org.
 
 ## Purpose
 
-This skill performs a **memory audit** on factory-named apps **across all orgs and all spaces**:
+This skill performs a **memory audit** on factory-named apps **in org `dekt-group-org` only**:
 
-1. **Scope**: All organizations and all spaces (no default org; inspect everything the CF MCP can access).
+1. **Scope**: Organization **`dekt-group-org`** and **all spaces** within that org (no other orgs).
 2. **Filter**: Only apps whose name contains `"factory"` (case-insensitive).
 3. **Rule**: Flag any app with memory **over 1GB (1024M)** and recommend reducing application memory.
 
@@ -25,13 +25,12 @@ Verify the Cloud Foundry MCP server is available. If not configured, tell the us
 
 ## Audit Workflow
 
-### Step 1: Enumerate orgs and spaces
+### Step 1: Enumerate spaces in dekt-group-org
 
-- **Scope is all orgs and all spaces.** Do not restrict to a single org unless the user explicitly asks.
+- **Scope is org `dekt-group-org` only.** Inspect all spaces in that org; do not inspect any other organization.
 - Use CF MCP tools to:
-  - List all organizations.
-  - For each organization, list all spaces.
-  - For each `(org, space)`, get the list of applications (pass org and space to the apps list tool).
+  - List all spaces in organization **`dekt-group-org`**.
+  - For each space in `dekt-group-org`, get the list of applications (pass org `dekt-group-org` and the space name to the apps list tool).
 
 ### Step 2: Filter to factory apps only
 
@@ -58,7 +57,7 @@ For each factory app:
 
 **Report structure:**
 
-1. **Scope**: "All orgs and all spaces. Only apps with 'factory' in the name."
+1. **Scope**: "Org dekt-group-org, all spaces. Only apps with 'factory' in the name."
 2. **Summary**: Total factory apps audited; count exceeding 1GB; count compliant (≤1GB).
 3. **Apps exceeding 1GB** (if any): For each, list:
    - App name
@@ -69,7 +68,7 @@ For each factory app:
 
 **Verification before responding:**
 
-- [ ] All orgs and all spaces were considered (unless user asked for a narrower scope).
+- [ ] Only org `dekt-group-org` and all its spaces were considered.
 - [ ] Only factory-named apps were evaluated and listed.
 - [ ] Every app over 1GB is named with its actual memory and includes the recommendation to reduce memory.
 - [ ] No non-factory apps appear in the report (except possibly a single total count of "X total apps in scope").
@@ -78,7 +77,7 @@ For each factory app:
 
 ```
 Factory Audit (memory cap 1GB)
-Scope: All orgs and all spaces. Only apps with 'factory' in the name.
+Scope: Org dekt-group-org, all spaces. Only apps with 'factory' in the name.
 
 Summary:
 - Factory apps audited: 8
@@ -86,8 +85,8 @@ Summary:
 - Compliant (≤1GB): 6
 
 Apps exceeding 1GB (recommend reducing application memory):
-- my-factory-api (org-a / space-x): 2048M — Recommendation: Reduce the application memory to 1GB or less.
-- factory-processor (org-b / space-y): 1536M — Recommendation: Reduce the application memory to 1GB or less.
+- my-factory-api (dekt-group-org / space-x): 2048M — Recommendation: Reduce the application memory to 1GB or less.
+- factory-processor (dekt-group-org / space-y): 1536M — Recommendation: Reduce the application memory to 1GB or less.
 
 Compliant: 6 factory apps at or under 1GB.
 ```
