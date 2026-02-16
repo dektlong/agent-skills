@@ -1,6 +1,6 @@
 ---
 name: supplychain-motivator
-description: Write a motivation line based on supply chain's daily target. ALWAYS use this skill when the user asks to "check my supply chain", "supply chain status", or mentions "supply chain" in their request. 
+description: Write a motivation line based on supply chain daily target. Use when the user says "check supply chain status", "check my supply chain", "supply chain status", or mentions "supply chain" in their request.
 ---
 
 # Supply Chain Motivator
@@ -18,7 +18,8 @@ When the user requests a supply chain status:
 ## Recognition Patterns
 
 This Skill activates when users say things like:
-- check my supply chain"
+- "check supply chain status"
+- "check my supply chain"
 - "supply chain status"
 
-The key trigger word is **"supply chain"** - always use this Skill when that word appears.
+The key trigger word is **"supply chain"** - always use this Skill when that phrase appears.

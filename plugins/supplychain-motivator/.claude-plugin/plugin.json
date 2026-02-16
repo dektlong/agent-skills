@@ -1,6 +1,6 @@
 {
   "name": "supplychain-motivator",
-  "description": "Write entertaining limericks with current news and topical references. ALWAYS use this skill when the user asks to write, make, or create a limerick about any topic.",
+  "description": "Write a motivation line based on supply chain daily target. Use when the user says 'check supply chain status', 'check my supply chain', 'supply chain status', or mentions 'supply chain' in their request.",
   "version": "1.0.0",
   "author": {
     "name": "dekel"
