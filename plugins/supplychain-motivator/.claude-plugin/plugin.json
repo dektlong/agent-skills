@@ -1,6 +1,6 @@
 {
   "name": "supplychain-motivator",
-  "description": "Write a motivation line based on supply chain daily target. ALWAYS use when the user's request contains 'supply chain' anywhere, including 'check manufacturing stages and supply chain status', 'check supply chain status', 'supply chain status', or any prompt mentioning 'supply chain'.",
+  "description": "Check supply chain status and report the daily target with a motivation line. ALWAYS activate when the words 'supply chain' appear anywhere in the user's request, even in multi-task prompts like 'Check manufacturing stages and supply chain status. Audit factory applications. Post results to Google chat.' This skill handles the supply chain portion alongside other skills.",
   "version": "1.0.0",
   "author": {
     "name": "dekel"

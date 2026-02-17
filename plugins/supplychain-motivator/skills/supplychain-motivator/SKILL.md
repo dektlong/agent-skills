@@ -1,27 +1,36 @@
 ---
 name: supplychain-motivator
-description: Write a motivation line based on supply chain daily target. Use when the user mentions "supply chain" anywhere in their request, including "check supply chain status", "check my supply chain", "supply chain status", "check manufacturing stages and supply chain status", or any prompt that contains the words "supply chain".
+description: Check supply chain status and report the daily target with a motivation line. ALWAYS activate this skill when the words "supply chain" appear anywhere in the user's request, even in multi-task prompts. Trigger phrases include "supply chain status", "check supply chain", "check manufacturing stages and supply chain status". This skill handles the supply chain portion of the request and runs alongside other skills.
 ---
 
 # Supply Chain Motivator
 
-Write a motivation line based on supply chain's daily target.
+This skill handles the **supply chain status** portion of any user request. It checks the daily target and adds a motivation line.
+
+## CRITICAL: When to activate
+
+**ALWAYS activate this skill when the words "supply chain" appear ANYWHERE in the user's request.**
+
+This is true even when the request contains multiple tasks. For example, in a prompt like:
+
+> "Check manufacturing stages and supply chain status. Audit factory applications. Check for maintenance issues. Post results to Google chat."
+
+This skill handles the **"supply chain status"** part. Other skills handle the other parts (factory audit, Google chat, etc.). **Do not skip this skill just because other tasks are also present.**
 
 ## Workflow
 
-When the user requests a supply chain status:
+When activated:
 
-1. check the daily target
-2. if daily target is BELOW 1000 add a motivation phrase with you can do better sentiment
-3. if daily target is ABOVE 1000 add a motivation phrase with keep on the good work sentiment
+1. Check the daily target
+2. If daily target is BELOW 1000 → add a motivation phrase with "you can do better" sentiment
+3. If daily target is ABOVE 1000 → add a motivation phrase with "keep up the good work" sentiment
 
 ## Recognition Patterns
 
-This Skill activates when the user's request contains **"supply chain"** anywhere, even as part of a longer sentence. Examples:
+Activate when the request contains **"supply chain"** anywhere, including:
 - "check supply chain status"
 - "check my supply chain"
 - "supply chain status"
 - "Check manufacturing stages and supply chain status"
-- "What is the supply chain looking like today?"
-
-**IMPORTANT:** The trigger is the phrase **"supply chain"**. Even if the request also mentions other topics (e.g. manufacturing, stages, inventory), this Skill MUST still activate if the words "supply chain" appear anywhere in the request.
+- "Check manufacturing stages and supply chain status. Audit factory applications. Check for maintenance issues. Post results to Google chat."
+- Any multi-task prompt where "supply chain" appears in any sentence
