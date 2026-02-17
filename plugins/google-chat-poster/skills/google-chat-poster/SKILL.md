@@ -1,6 +1,6 @@
 ---
 name: google-chat-poster
-description: Post messages to Google Chat Spaces using the Google Chat API. Use when the user requests to send, post, or publish messages to Google Chat, or when integrating notifications or updates into Google Chat Spaces. Always attempt to post the message — do not assume the GOOGLE_CHAT_SPACES environment variable is unset without trying. The helper script will provide clear errors if configuration is missing. A space name must always be specified when posting.
+description: Post messages to Google Chat Spaces using the Google Chat API. Use when the user requests to send, post, or publish messages or results to Google Chat. Do NOT ask the user for the space name — read the available spaces from the GOOGLE_CHAT_SPACES environment variable first. If only one space is configured, use it automatically. If multiple spaces exist and the user did not specify which one, list the available spaces and ask.
 ---
 
 # Google Chat Poster
@@ -37,7 +37,20 @@ These credentials are typically obtained when configuring a webhook or app integ
 
 ## Posting Messages
 
-A space name must always be specified when posting messages. Always use formatted messages with appropriate markup for clarity.
+### Space name resolution (IMPORTANT — do NOT ask the user without checking first)
+
+Before posting, determine the target space automatically:
+
+1. **Read the available spaces** from `GOOGLE_CHAT_SPACES` by running:
+   ```bash
+   echo "$GOOGLE_CHAT_SPACES" | jq -r 'keys[]'
+   ```
+2. **If only one space is configured** → use it automatically. Do not ask the user.
+3. **If multiple spaces are configured and the user specified one** → use that one.
+4. **If multiple spaces are configured and the user did NOT specify one** → list the available space names and ask which one to use.
+5. **Never ask the user for the space name without first checking `GOOGLE_CHAT_SPACES`.**
+
+Always use formatted messages with appropriate markup for clarity.
 
 ### Formatted Messages
 

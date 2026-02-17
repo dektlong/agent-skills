@@ -1,6 +1,6 @@
 {
   "name": "google-chat-poster",
-  "description": "Post messages to Google Chat Spaces using the Google Chat API. Use when the user requests to send, post, or publish messages to Google Chat.",
+  "description": "Post messages to Google Chat Spaces using the Google Chat API. Use when the user requests to send, post, or publish messages or results to Google Chat. Read available spaces from GOOGLE_CHAT_SPACES env var — do not ask the user for the space name without checking the env var first.",
   "version": "1.0.0",
   "author": {
     "name": "Corby Page"
