@@ -1,6 +1,6 @@
 {
   "name": "supplychain-motivator",
-  "description": "Write a motivation line based on supply chain daily target. Use when the user says 'check supply chain status', 'check my supply chain', 'supply chain status', or mentions 'supply chain' in their request.",
+  "description": "Write a motivation line based on supply chain daily target. ALWAYS use when the user's request contains 'supply chain' anywhere, including 'check manufacturing stages and supply chain status', 'check supply chain status', 'supply chain status', or any prompt mentioning 'supply chain'.",
   "version": "1.0.0",
   "author": {
     "name": "dekel"
