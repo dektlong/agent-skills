@@ -1,6 +1,6 @@
 {
   "name": "google-chat-poster",
-  "description": "Post messages or results to a Google Chat space. ALWAYS activate when the user says 'post to Google chat', 'post results to Google chat', 'post all results to Google chat', or mentions 'Google chat' as a destination. In multi-task prompts, aggregates results from all completed tasks into a single formatted message. Read available spaces from GOOGLE_CHAT_SPACES env var — do not ask the user for the space name without checking the env var first.",
+  "description": "Post messages or results to a Google Chat space. ALWAYS activate when the user says 'post to Google chat', 'post results to Google chat', 'post all results to Google chat', or mentions 'Google chat' as a destination. In multi-task prompts, aggregates results from all completed tasks into a single formatted message. Read available spaces from GOOGLE_CHAT_SPACES env var — do not ask the user for the space name without checking the env var first. IMPORTANT: You MUST actually execute the curl or python3 post_message.py command in a shell and verify a 200 response — never claim the message was sent without running the command and confirming success from its output.",
   "version": "1.0.0",
   "author": {
     "name": "Corby Page"

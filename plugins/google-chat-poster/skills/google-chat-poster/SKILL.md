@@ -1,6 +1,6 @@
 ---
 name: google-chat-poster
-description: Post messages or results to a Google Chat space. ALWAYS activate when the user says "post to Google chat", "post results to Google chat", "post all results to Google chat", or mentions "Google chat" as a destination for output. This includes multi-task prompts like "Post all results to Google chat". Do NOT ask the user for the space name — read available spaces from the GOOGLE_CHAT_SPACES environment variable first.
+description: Post messages or results to a Google Chat space. ALWAYS activate when the user says "post to Google chat", "post results to Google chat", "post all results to Google chat", or mentions "Google chat" as a destination for output. This includes multi-task prompts like "Post all results to Google chat". Do NOT ask the user for the space name — read available spaces from the GOOGLE_CHAT_SPACES environment variable first. You MUST execute the actual curl or python3 command and verify a 200 response — never claim success without running the command.
 ---
 
 # Google Chat Poster
@@ -68,6 +68,20 @@ Each space entry requires:
 - `token`: The authentication token
 
 These credentials are typically obtained when configuring a webhook or app integration for a Google Chat Space.
+
+## CRITICAL: You MUST actually execute the post command
+
+**DO NOT claim the message was sent without running the actual `curl` command or Python script.**
+
+Many agents make the mistake of composing the message, describing what they *would* do, and then stating "The report has been sent" — without ever executing a shell command. This is **not acceptable**.
+
+You MUST:
+1. **Run** the `curl` command or `python3 post_message.py` command in a shell/terminal.
+2. **Read** the HTTP response status code from the command output.
+3. **Only claim success** if you see `HTTP 200` and a valid JSON response containing a `name` field (the message resource ID).
+4. **Report failure** if the command returns a non-200 status, the env var is missing, or the space is not found.
+
+If you cannot execute shell commands in your current environment, **say so explicitly** instead of pretending the message was posted.
 
 ## Posting Messages
 
@@ -151,6 +165,15 @@ if ! echo "$GOOGLE_CHAT_SPACES" | jq -e --arg name "$SPACE_NAME" '.[$name]' > /d
   echo "Available spaces: $(echo "$GOOGLE_CHAT_SPACES" | jq -r 'keys | join(", ")')"
 fi
 ```
+
+### Verifying the post succeeded
+
+After running the `curl` command or `python3 post_message.py`, you **must** check the output:
+
+- **Success**: The output will contain `"name": "spaces/.../messages/..."` and the HTTP status will be `200`. Only then should you tell the user the message was posted.
+- **Failure**: If you see an error, a non-200 status code, or no output at all, tell the user the post **failed** and include the error details.
+
+**Never skip this verification step. Never claim success without evidence from the command output.**
 
 ## Error Handling
 
