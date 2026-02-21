@@ -38,12 +38,12 @@
     {
       "name": "google-chat-poster",
       "source": "./plugins/google-chat-poster",
-      "description": "Post messages to Google Chat Spaces. Aggregates results from all other skills in multi-task prompts into a single formatted message.",
+      "description": "Post messages or results to a Google Chat space. ALWAYS activate when the user says 'post to Google chat', 'post results to Google chat', 'post all results to Google chat', or mentions 'Google chat' as a destination for output. In multi-task prompts, aggregates results from all completed tasks into a single formatted message.",
       "version": "1.0.0",
       "author": {
         "name": "Corby Page"
       },
-      "keywords": ["google-chat", "chat", "notifications", "messaging", "aggregate results", "post results"],
+      "keywords": ["google-chat", "google chat", "post to Google chat", "post results to Google chat", "post all results to Google chat", "post all results", "post results", "chat", "notifications", "messaging", "aggregate results"],
       "category": "integration",
       "license": "MIT",
       "strict": true
