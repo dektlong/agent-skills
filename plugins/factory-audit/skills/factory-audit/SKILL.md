@@ -1,13 +1,15 @@
 ---
 name: factory-audit
-description: Finds Cloud Foundry apps with "factory" in the name in org dekt-org-group (all spaces), flags apps whose memory exceeds 1GB, and recommends reducing application memory. Use when the user says "audit factory apps", asks to audit factory apps memory, find factory apps over 1GB, or run a factory memory audit.
+description: Audit factory applications for memory compliance in org dekt-org-group (all spaces). Flags apps over 1GB and recommends reducing memory. ALWAYS activate when the user says "audit factory applications", "audit factory apps", or mentions auditing factory apps. Runs alongside supplychain-motivator and google-chat-poster in multi-task prompts.
 ---
 
 # Factory Audit
 
 ## When to use
 
-This skill runs when the user says **"audit factory apps"** or asks to audit factory apps (memory), find factory apps over 1GB, or check factory app memory in dekt-org-group.
+This skill runs when the user says **"audit factory applications"**, **"audit factory apps"**, or asks to audit factory apps for memory compliance. This includes multi-task prompts like:
+
+> "Check manufacturing stages, motivate current supply chain, audit factory applications, check maintenance document. Post all results to Google chat"
 
 ## Purpose
 

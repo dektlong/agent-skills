@@ -1,6 +1,6 @@
 ---
 name: google-chat-poster
-description: Post messages to Google Chat Spaces using the Google Chat API. Use when the user requests to send, post, or publish messages or results to Google Chat. Do NOT ask the user for the space name — read the available spaces from the GOOGLE_CHAT_SPACES environment variable first. If only one space is configured, use it automatically. If multiple spaces exist and the user did not specify which one, list the available spaces and ask.
+description: Post messages or results to a Google Chat space. ALWAYS activate when the user says "post to Google chat", "post results to Google chat", "post all results to Google chat", or mentions "Google chat" as a destination for output. This includes multi-task prompts like "Post all results to Google chat". Do NOT ask the user for the space name — read available spaces from the GOOGLE_CHAT_SPACES environment variable first.
 ---
 
 # Google Chat Poster
@@ -8,6 +8,40 @@ description: Post messages to Google Chat Spaces using the Google Chat API. Use 
 ## Overview
 
 Post formatted messages to Google Chat Spaces using the Google Chat API. This skill enables sending rich formatted messages to specific Chat Spaces using webhook-style authentication. Multiple spaces are supported via a single JSON configuration. Always use formatting (bold, italic, code, etc.) to make messages clear and readable.
+
+## CRITICAL: When to activate
+
+**ALWAYS activate this skill when the words "Google chat" or "Google Chat" appear ANYWHERE in the user's request as a destination for output.**
+
+This is true even when the request contains multiple tasks. For example, in a prompt like:
+
+> "Check manufacturing stages, motivate current supply chain, audit factory applications, check maintenance document. Post all results to Google chat"
+
+This skill handles the **"Post all results to Google chat"** part. The other skills (supplychain-motivator, factory-audit, and any others active in the prompt) produce their respective results, and **this skill aggregates and posts ALL of those results as a single formatted message**.
+
+## Multi-Task Result Aggregation (IMPORTANT)
+
+When the user's prompt contains multiple tasks AND asks to "post all results to Google chat", this skill must:
+
+1. **Wait for all other skills/tasks to complete first.** Do not post until you have results from every task mentioned in the prompt.
+2. **Aggregate all results** into a single, well-formatted Google Chat message.
+3. **Use clear section headers** so each task's results are visually separated.
+
+### Aggregated message format
+
+Collect each completed task's output and format it as a numbered section under a report header. Include only the tasks that were actually executed. Example with two skills:
+
+```
+*Daily Operations Report*
+
+*1. Supply Chain Motivation*
+{daily target, status, motivation message from supplychain-motivator skill}
+
+*2. Factory Audit*
+{scope, summary counts, any apps over 1GB with recommendations from factory-audit skill}
+```
+
+If additional tasks were handled (e.g. via MCP tools, RAG workflows, or other skills), add them as additional numbered sections. Keep the message concise but complete. Include key numbers, alerts, and recommendations. Do not include raw data dumps — summarize each section clearly.
 
 ## Prerequisites
 
@@ -45,9 +79,9 @@ Before posting, determine the target space automatically:
    ```bash
    echo "$GOOGLE_CHAT_SPACES" | jq -r 'keys[]'
    ```
-2. **If only one space is configured** → use it automatically. Do not ask the user.
-3. **If multiple spaces are configured and the user specified one** → use that one.
-4. **If multiple spaces are configured and the user did NOT specify one** → list the available space names and ask which one to use.
+2. **If only one space is configured** -> use it automatically. Do not ask the user.
+3. **If multiple spaces are configured and the user specified one** -> use that one.
+4. **If multiple spaces are configured and the user did NOT specify one** -> list the available space names and ask which one to use.
 5. **Never ask the user for the space name without first checking `GOOGLE_CHAT_SPACES`.**
 
 Always use formatted messages with appropriate markup for clarity.
@@ -83,10 +117,6 @@ curl -X POST \
 
 **Important:** When using curl directly, use `jq` to construct the JSON payload with multiline message variables. For the helper script, you can use `\n` directly in your message string - the script automatically converts them to actual newlines.
 
-**Example usage:**
-- User request: "Send the message 'Build completed successfully' to the spring-ai Google Chat space"
-- Action: Post a formatted message: `*Build completed successfully*` with additional context using appropriate formatting
-
 ### Formatting Reference
 
 | Format | Syntax | Example |
@@ -97,9 +127,10 @@ curl -X POST \
 | Newline | `\n` | Line breaks between sections |
 
 Always apply formatting to:
-- Status indicators (e.g., `*SUCCESS*`, `*FAILED*`)
+- Status indicators (e.g., `*SUCCESS*`, `*FAILED*`, `*Healthy*`, `*Degraded*`, `*Down*`)
 - Technical terms and commands (e.g., `` `git push` ``, `` `main` `` branch)
 - Important names or values that need emphasis
+- Section headers in aggregated reports
 
 ### Environment Variable Verification
 
@@ -130,6 +161,7 @@ Common issues and solutions:
 - **404 Not Found**: Verify that the `space_id` for the space is correct
 - **400 Bad Request**: Check that the JSON payload is properly formatted
 - **Invalid JSON**: Ensure `GOOGLE_CHAT_SPACES` contains valid JSON
+- **Message too long**: Google Chat has a 4096-character limit per message. If the aggregated report exceeds this, split into multiple messages with clear part indicators (e.g., "Part 1/2", "Part 2/2")
 
 Always check the HTTP response status code and message for details on any errors.
 
@@ -161,6 +193,9 @@ python3 post_message.py spring-ai "*Hello* from the Google Chat API!"
 
 # Post a formatted status update with line breaks (the script converts \n to newlines)
 python3 post_message.py kuhn-labs-alerts "*Build completed successfully*\n\nAll tests passed on \`main\` branch."
+
+# Post an aggregated multi-task report
+python3 post_message.py spring-ai "*Daily Operations Report*\n\n*1. Supply Chain*\nTarget: 1200 units — keep up the great work!\n\n*2. Factory Audit*\n8 factory apps audited, 2 over 1GB"
 ```
 
 If the specified space is not found in the configuration, the script will exit with an error and list the available spaces.

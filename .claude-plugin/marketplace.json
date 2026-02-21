@@ -10,15 +10,41 @@
   },
   "plugins": [
     {
-      "name": "topical-limerick",
-      "source": "./plugins/topical-limerick",
-      "description": "Write entertaining limericks with current news and topical references. Automatically searches for recent news and crafts witty, properly-formatted limericks.",
+      "name": "supplychain-motivator",
+      "source": "./plugins/supplychain-motivator",
+      "description": "Motivate the supply chain team based on daily target. Checks daily output and generates encouragement or celebration messages.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dekel Tankel"
+      },
+      "keywords": ["supply chain", "motivate", "daily target", "manufacturing"],
+      "category": "operations",
+      "license": "MIT",
+      "strict": true
+    },
+    {
+      "name": "factory-audit",
+      "source": "./plugins/factory-audit",
+      "description": "Audit factory applications for memory compliance in org dekt-org-group. Flags apps over 1GB and recommends reducing memory.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dekel Tankel"
+      },
+      "keywords": ["factory", "audit", "memory", "compliance", "cloud-foundry", "1GB"],
+      "category": "cloud-foundry",
+      "license": "MIT",
+      "strict": true
+    },
+    {
+      "name": "google-chat-poster",
+      "source": "./plugins/google-chat-poster",
+      "description": "Post messages to Google Chat Spaces. Aggregates results from all other skills in multi-task prompts into a single formatted message.",
       "version": "1.0.0",
       "author": {
         "name": "Corby Page"
       },
-      "keywords": ["limerick", "poetry", "writing", "news", "topical", "entertainment", "ai", "skills"],
-      "category": "writing",
+      "keywords": ["google-chat", "chat", "notifications", "messaging", "aggregate results", "post results"],
+      "category": "integration",
       "license": "MIT",
       "strict": true
     },
@@ -34,33 +60,6 @@
       "category": "integration",
       "license": "MIT",
       "strict": true
-    },
-    {
-      "name": "google-chat-poster",
-      "source": "./plugins/google-chat-poster",
-      "description": "Post messages to Google Chat Spaces using the Google Chat API. Use when the user requests to send, post, or publish messages to Google Chat.",
-      "version": "1.0.0",
-      "author": {
-        "name": "Corby Page"
-      },
-      "keywords": ["google-chat", "chat", "notifications", "messaging", "collaboration", "google"],
-      "category": "integration",
-      "license": "MIT",
-      "strict": true
-    },
-    {
-      "name": "cf-space-auditor",
-      "source": "./plugins/cf-space-auditor",
-      "description": "Audit Cloud Foundry spaces for compliance with memory allocation standards, instance counts, and deployment staleness. Use when the user asks to audit a CF space or check space compliance.",
-      "version": "1.0.0",
-      "author": {
-        "name": "Corby Page"
-      },
-      "keywords": ["cloud-foundry", "cf", "audit", "compliance", "tanzu", "vmware", "monitoring"],
-      "category": "cloud-foundry",
-      "license": "MIT",
-      "strict": true
     }
   ]
 }
-
