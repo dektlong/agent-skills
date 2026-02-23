@@ -1,11 +1,11 @@
 {
   "name": "supplychain-motivator",
-  "description": "Motivate the supply chain team based on daily target. ALWAYS activate when 'supply chain' appears anywhere in the user's request. Trigger phrases: 'motivate current supply chain', 'motivate supply chain', 'supply chain status', 'check supply chain'. Runs alongside factory-audit and google-chat-poster in multi-task prompts.",
+  "description": "Supply chain status and motivation. ALWAYS activate when 'supply chain' appears anywhere in the user's request — even without the word 'motivate'. Trigger phrases include: 'current supply chain', 'check supply chain', 'supply chain status', 'motivate supply chain', 'motivate current supply chain'. Runs alongside factory-audit and google-chat-poster in multi-task prompts.",
   "version": "1.0.0",
   "author": {
     "name": "dekel"
   },
-  "keywords": ["supply chain", "motivate supply chain", "motivate", "supply chain status", "manufacturing", "manufacturing stages", "daily target"],
+  "keywords": ["supply chain", "current supply chain", "check supply chain", "supply chain status", "motivate supply chain", "motivate", "manufacturing", "manufacturing stages", "daily target"],
   "license": "MIT",
   "skills": ["./skills/supplychain-motivator"]
 }

@@ -12,12 +12,12 @@
     {
       "name": "supplychain-motivator",
       "source": "./plugins/supplychain-motivator",
-      "description": "Motivate the supply chain team based on daily target. Checks daily output and generates encouragement or celebration messages.",
+      "description": "Supply chain status and motivation. ALWAYS activate when 'supply chain' appears anywhere in the user's request — including 'current supply chain', 'check supply chain', 'supply chain status', 'motivate supply chain', or any other mention. Checks the daily target and generates a status report with team motivation.",
       "version": "1.0.0",
       "author": {
         "name": "Dekel Tankel"
       },
-      "keywords": ["supply chain", "motivate", "daily target", "manufacturing"],
+      "keywords": ["supply chain", "current supply chain", "check supply chain", "supply chain status", "motivate supply chain", "motivate", "daily target", "manufacturing"],
       "category": "operations",
       "license": "MIT",
       "strict": true
