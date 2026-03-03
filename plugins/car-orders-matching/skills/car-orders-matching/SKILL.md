@@ -43,28 +43,56 @@ Activate immediately when the user message contains any of:
 - **All stages ≥ 80%** → use the "factory ready" output block below.
 - **Any stage < 80%** → use the "factory not ready" output block below.
 
+## Color emoji mapping
+
+For **Ext. Color** and **Int. Color**, append a matching color emoji after the value:
+
+| Color word (case-insensitive) | Emoji |
+|-------------------------------|-------|
+| red / crimson / scarlet       | 🔴    |
+| blue / navy / sapphire        | 🔵    |
+| green / emerald / forest      | 🟢    |
+| yellow / gold / amber         | 🟡    |
+| orange                        | 🟠    |
+| white / pearl / ivory / cream | ⚪    |
+| black / obsidian / onyx       | ⚫    |
+| grey / gray / silver          | 🩶    |
+| brown / bronze / copper       | 🟤    |
+| pink / rose / magenta         | 🩷    |
+| purple / violet / lavender    | 🟣    |
+| any other color               | 🎨    |
+
 ## Output format
 
 **When factory is ready (all stages ≥ 80%):**
 
-```
-Car Order
-Order ID:    <value>
-Model:       <value>
-Color:       <value>
-Engine:      <value>
-<one line per additional field returned, label: value>
+Each field MUST be on its own line. Use this exact layout:
 
-We are ready to paint your car.
+```
+🚗 Car Order === Car Order #<order-id> ===
+Vehicle      : <value>
+Ext. Color   : <value> <color-emoji>
+Int. Color   : <value> <color-emoji>
+Engine       : <value>
+Transmission : <value>
+Packages     : <value>
+Accessories  : <value>
+Base Price   : <value>
+Total Price  : <value>
+Est. Delivery: <value>
+Status       : <value>
+
+✅ We are ready to paint your car.
 ```
 
-- Print every field returned by the MCP on its **own line** as `Label:   <value>`.
-- Separate the order block from the closing sentence with **one blank line**.
+- Every field on its **own line** — never concatenate fields onto one line.
+- Include any additional fields returned by the MCP in the same `Label : <value>` format.
+- One blank line between the last field and the closing sentence.
 
 **When factory is not ready (any stage < 80%):**
 
 ```
-The factory stages cannot deal with this order at this time.
+❌ The factory stages cannot deal with this order at this time.
 ```
 
-**YOUR ENTIRE REPLY IS THE FILLED-IN BLOCK ABOVE. NOTHING ELSE. NO TABLES. NO SUMMARIES. NO NEXT STEPS. NO EMOJIS. DO NOT ADD ANY OTHER TEXT.**
+**YOUR ENTIRE REPLY IS THE FILLED-IN BLOCK ABOVE. NOTHING ELSE. NO TABLES. NO SUMMARIES. NO NEXT STEPS. DO NOT ADD ANY OTHER TEXT.**
