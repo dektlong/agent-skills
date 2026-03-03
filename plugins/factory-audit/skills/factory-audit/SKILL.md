@@ -1,15 +1,13 @@
 ---
 name: factory-audit
-description: Audit manufacturing stage health AND maintenance document warranty items. ALWAYS activate when the user says "audit factory". Runs alongside supplychain-motivator and google-chat-poster in multi-task prompts.
+description: Audit manufacturing stage health AND maintenance document warranty items. ALWAYS activate when the user says "audit factory". Supply chain is NOT part of this skill. Runs alongside google-chat-poster in multi-task prompts.
 ---
 
 # Factory Audit
 
 ## When to use
 
-Activate when the user says **"audit factory"**. This includes multi-task prompts like:
-
-> "motivate current supply chain, audit factory. Post all results to Google chat"
+Activate when the user says **"audit factory"**. This skill covers **only** Manufacturing Stages and Maintenance Document. Supply chain is out of scope — do not include it.
 
 ## Prerequisites
 
