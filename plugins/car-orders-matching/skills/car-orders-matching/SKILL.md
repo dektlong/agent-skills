@@ -34,7 +34,7 @@ Activate immediately when the user message contains any of:
 
 ## Steps
 
-**Step 1 — Generate a random car order:** Call `getRandomCarOrder` via the `dekt-car-orders` MCP. Record the full order details returned.
+**Step 1 — Generate a random car order:** Call `getRandomCarOrder` via the `dekt-car-orders` MCP. The MCP may return a single concatenated string. **Parse it into individual fields** — do NOT output the raw MCP string.
 
 **Step 2 — Check manufacturing stages:** Call `getManufacturingStages` via the `dekt-factory-info` MCP. Check if **any** stage has a health value **below 80%**.
 
@@ -64,35 +64,32 @@ For **Ext. Color** and **Int. Color**, append a matching color emoji after the v
 
 ## Output format
 
+**NEVER echo the raw MCP string. Always reconstruct the output using the markdown template below.**
+
 **When factory is ready (all stages ≥ 80%):**
 
-Each field MUST be on its own line. Use this exact layout:
+### 🚗 Car Order #<order-id>
 
-```
-🚗 Car Order === Car Order #<order-id> ===
-Vehicle      : <value>
-Ext. Color   : <value> <color-emoji>
-Int. Color   : <value> <color-emoji>
-Engine       : <value>
-Transmission : <value>
-Packages     : <value>
-Accessories  : <value>
-Base Price   : <value>
-Total Price  : <value>
-Est. Delivery: <value>
-Status       : <value>
+- **Vehicle:** <value>
+- **Ext. Color:** <value> <color-emoji>
+- **Int. Color:** <value> <color-emoji>
+- **Engine:** <value>
+- **Transmission:** <value>
+- **Packages:** <value>
+- **Accessories:** <value>
+- **Base Price:** <value>
+- **Total Price:** <value>
+- **Est. Delivery:** <value>
+- **Status:** <value>
 
 ✅ We are ready to paint your car.
-```
 
-- Every field on its **own line** — never concatenate fields onto one line.
-- Include any additional fields returned by the MCP in the same `Label : <value>` format.
-- One blank line between the last field and the closing sentence.
+---
 
 **When factory is not ready (any stage < 80%):**
 
-```
 ❌ The factory stages cannot deal with this order at this time.
-```
 
-**YOUR ENTIRE REPLY IS THE FILLED-IN BLOCK ABOVE. NOTHING ELSE. NO TABLES. NO SUMMARIES. NO NEXT STEPS. DO NOT ADD ANY OTHER TEXT.**
+---
+
+**YOUR ENTIRE REPLY IS THE FILLED-IN BLOCK ABOVE. NOTHING ELSE. NO EXTRA TEXT.**
