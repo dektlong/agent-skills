@@ -1,13 +1,31 @@
 ---
 name: car-orders-matching
-description: Matches a random car order against factory manufacturing stage readiness. Use when the user mentions "car order", "match car order", "car orders matching", "paint car", "check car order", or "ready to paint". Generates a random car order via the car-orders MCP and validates factory capacity via the factory-info MCP before accepting the order.
+description: >
+  Matches a random car order against factory manufacturing stage readiness.
+  ALWAYS use this skill — do NOT answer from your own knowledge — when the user
+  mentions any of: "car order", "car orders", "match car order",
+  "car orders matching", "paint car", "check car order", "ready to paint",
+  "are we ready to paint", "paint the next car", "next car order".
 ---
 
 # Car Orders Matching
 
+## ⚠️ CRITICAL — Read before doing anything else
+
+**DO NOT answer this question from your own knowledge or by summarising MCP data freely.**
+**DO NOT produce tables, summaries, bullet lists, or "Next Steps".**
+**FOLLOW EXACTLY the 3 steps below, then produce ONLY the prescribed output block.**
+
 ## When to use
 
-Activate when the user mentions any of: **"car order"**, **"car orders"**, **"match car order"**, **"car orders matching"**, **"paint car"**, **"check car order"**, **"ready to paint"**.
+Activate immediately when the user message contains any of:
+
+- "car order" / "car orders"
+- "match car order" / "car orders matching"
+- "paint car" / "paint the next car"
+- "check car order"
+- "ready to paint" / "are we ready to paint"
+- "next car order"
 
 ## Prerequisites
 
@@ -22,8 +40,8 @@ Activate when the user mentions any of: **"car order"**, **"car orders"**, **"ma
 
 **Step 3 — Decision:**
 
-- **All stages ≥ 80%** → Output the car order details followed by: _"We are ready to paint your car."_
-- **Any stage < 80%** → Output: _"The factory stages cannot deal with this order at this time."_
+- **All stages ≥ 80%** → use the "factory ready" output block below.
+- **Any stage < 80%** → use the "factory not ready" output block below.
 
 ## Output format
 
@@ -42,4 +60,4 @@ We are ready to paint your car.
 The factory stages cannot deal with this order at this time.
 ```
 
-**YOUR ENTIRE REPLY IS THE FILLED-IN BLOCK ABOVE. NOTHING ELSE. DO NOT ADD ANY OTHER TEXT.**
+**YOUR ENTIRE REPLY IS THE FILLED-IN BLOCK ABOVE. NOTHING ELSE. NO TABLES. NO SUMMARIES. NO NEXT STEPS. NO EMOJIS. DO NOT ADD ANY OTHER TEXT.**
