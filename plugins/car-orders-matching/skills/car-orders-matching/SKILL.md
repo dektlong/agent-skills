@@ -49,10 +49,17 @@ Activate immediately when the user message contains any of:
 
 ```
 Car Order
-<full car order details from Step 1>
+Order ID:    <value>
+Model:       <value>
+Color:       <value>
+Engine:      <value>
+<one line per additional field returned, label: value>
 
 We are ready to paint your car.
 ```
+
+- Print every field returned by the MCP on its **own line** as `Label:   <value>`.
+- Separate the order block from the closing sentence with **one blank line**.
 
 **When factory is not ready (any stage < 80%):**
 
