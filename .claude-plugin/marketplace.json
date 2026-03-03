@@ -25,7 +25,7 @@
     {
       "name": "factory-audit",
       "source": "./plugins/factory-audit",
-      "description": "Audit factory applications for memory compliance in org dekt-org-group. Flags apps over 1GB and recommends reducing memory.",
+      "description": "Audit manufacturing stage health and maintenance document warranty items. Flags stages below 85% health and out-of-warranty items.",
       "version": "1.0.0",
       "author": {
         "name": "Dekel Tankel"
