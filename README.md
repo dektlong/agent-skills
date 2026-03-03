@@ -4,20 +4,46 @@ A curated plugin marketplace for Claude Code featuring productivity and integrat
 
 ## Overview
 
-This marketplace provides Claude Code plugins for enhancing development workflows with Tanzu Platform integrations and creative tools.
+This marketplace provides Claude Code plugins for enhancing development workflows with Tanzu Platform integrations and factory operations.
 
 ## Available Plugins
 
-### CF Space Auditor
+### Factory Audit
 
-Audit Cloud Foundry spaces for compliance with organizational standards. This plugin performs:
+Audit manufacturing stage health and maintenance document warranty items. This plugin performs:
 
-- **Memory allocation compliance** checks (Java apps: 1024M, Non-Java apps: 512M)
-- **Instance count monitoring** to identify multi-instance deployments
-- **Deployment staleness detection** for apps not updated in 180+ days
-- **Detailed compliance reports** with specific findings for each app
+- **Manufacturing stage health checks** flagging any stage below 85%
+- **Maintenance document inspection** identifying expired warranty items
+- **Concise audit report** with only the flagged findings
 
-**Perfect for:** Cloud Foundry compliance audits, space governance, identifying configuration drift, maintaining deployment standards
+**Triggers:** "audit factory", "manufacturing stages", "maintenance document", "inspect maintenance document"
+
+**Perfect for:** Factory floor health checks, maintenance compliance, warranty tracking
+
+### Supply Chain Motivator
+
+Check the daily supply chain target and generate a motivation message for the team. This plugin provides:
+
+- **Daily target retrieval** from environment variables or CF app status
+- **Sentiment-based messaging** — encouraging when below 1000 units, celebratory when at or above
+- **Structured output** ready for inclusion in combined reports
+
+**Triggers:** "supply chain", "current supply chain", "check supply chain", "supply chain status", "motivate supply chain"
+
+**Perfect for:** Daily stand-ups, team motivation, supply chain reporting
+
+### Car Orders Matching
+
+Match a random car order against factory manufacturing stage readiness. This plugin:
+
+- **Generates a random car order** via the car-orders MCP
+- **Checks all manufacturing stages** via the factory-info MCP
+- **Accepts the order** with a confirmation message if all stages are ≥ 80% healthy
+- **Rejects the order** if any stage falls below 80%
+
+**Triggers:** "car order", "car orders", "match car order", "car orders matching", "paint car", "check car order"
+
+**Perfect for:** Car production scheduling, factory capacity validation, order intake workflows
 
 ### Mailgun
 
@@ -28,6 +54,8 @@ Send emails via the Mailgun API directly from Claude Code. This plugin enables:
 - **Professional formatting** with proper greetings and closings
 - **Environment-based authentication** using MAILGUN_API_KEY
 
+**Triggers:** "send an email", "notify someone via email", "compose and deliver email"
+
 **Perfect for:** Automated notifications, team communications, workflow integrations, email automation
 
 ### Google Chat Poster
@@ -35,22 +63,13 @@ Send emails via the Mailgun API directly from Claude Code. This plugin enables:
 Post messages to Google Chat Spaces using the Google Chat API. This plugin provides:
 
 - **Direct posting** to Google Chat Spaces
-- **Text and formatted messages** with markdown support
-- **Webhook-based authentication** for easy integration
-- **Error handling** with clear feedback
+- **Result aggregation** — combines output from multiple skills into one message in multi-task prompts
+- **Space discovery** via the `GOOGLE_CHAT_SPACES` environment variable
+- **Verified delivery** with confirmed HTTP 200 response
 
-**Perfect for:** Team notifications, build status updates, CI/CD integrations, workflow alerts
+**Triggers:** "post to Google Chat", "post results to Google Chat", "post all results to Google Chat"
 
-### Topical Limerick
-
-Write entertaining limericks that blend any requested topic with current news and events. This plugin adds an AI skill that:
-
-- **Searches recent news** automatically for topical references
-- **Follows proper limerick structure** (AABBA rhyme scheme, anapestic meter)
-- **Incorporates specific details** from current events
-- **Maintains humor and wit** with surprising, clever endings
-
-**Perfect for:** Creative writing, entertainment, making technical topics fun, social media content, presentations
+**Perfect for:** Team notifications, build status updates, CI/CD integrations, aggregated workflow reports
 
 ## 🚀 Quick Start
 
@@ -72,10 +91,11 @@ Or if you've cloned this repository locally:
 
 ```bash
 # Install all plugins
-/plugin install cf-space-auditor@claude-plugin-marketplace
+/plugin install factory-audit@claude-plugin-marketplace
+/plugin install supplychain-motivator@claude-plugin-marketplace
+/plugin install car-orders-matching@claude-plugin-marketplace
 /plugin install mailgun@claude-plugin-marketplace
 /plugin install google-chat-poster@claude-plugin-marketplace
-/plugin install topical-limerick@claude-plugin-marketplace
 ```
 
 3. **Restart Claude Code** to activate the plugins
@@ -88,10 +108,22 @@ Or if you've cloned this repository locally:
 
 ### Usage Examples
 
-**CF Space Auditor:**
+**Factory Audit:**
 ```
-Audit the development space in our production org
-Check compliance for the staging space
+Audit factory
+Check manufacturing stages and inspect maintenance document
+```
+
+**Supply Chain Motivator:**
+```
+Check current supply chain
+Motivate supply chain
+```
+
+**Car Orders Matching:**
+```
+Match a car order
+Check if we can handle a new car order
 ```
 
 **Mailgun:**
@@ -101,42 +133,41 @@ Send an email to team@example.com about the deployment being complete
 
 **Google Chat Poster:**
 ```
-Post "Build completed successfully" to Google Chat
-Send a message to Google Chat about the deployment status
-```
-
-**Topical Limerick:**
-```
-Create a limerick about SpaceX
-Limerick about the latest AI news
+Post all results to Google Chat
+Post the factory audit results to Google Chat
 ```
 
 ## How the Plugins Work
 
 Each plugin provides specialized skills that Claude Code automatically activates based on your requests:
 
-- **CF Space Auditor** activates when you mention "audit" with a CF space and performs compliance checks against organizational standards
-- **Mailgun** activates when you request to send emails and handles API communication with proper formatting
-- **Google Chat Poster** activates when you mention posting to Google Chat and manages the API integration
-- **Topical Limerick** activates when you mention "limerick" and searches for current news to create topical poetry
+- **Factory Audit** activates when you mention "audit factory" or "manufacturing stages" and reports unhealthy stages and expired warranty items
+- **Supply Chain Motivator** activates when "supply chain" appears anywhere in your request and generates a target-based motivation message for the team
+- **Car Orders Matching** activates when you mention "car order" and validates factory readiness before accepting or rejecting the order
+- **Mailgun** activates when you request to send emails and handles Mailgun API communication with proper formatting
+- **Google Chat Poster** activates when you mention posting to Google Chat and delivers a formatted, aggregated message to the configured space
 
-The plugins seamlessly integrate into your Claude Code workflow, requiring no special syntax or commands once installed.
+The plugins seamlessly integrate into your Claude Code workflow, requiring no special syntax or commands once installed. Multiple plugins can be activated in the same prompt — for example, running a factory audit and supply chain check and posting all results to Google Chat in one request.
 
 ## 🔧 For Plugin Developers
 
 ### Repository Structure
 
 ```
-tanzu-platform-plugins/
+agent-skills/
 ├── .claude-plugin/
 │   └── marketplace.json          # Marketplace configuration
 ├── plugins/
-│   ├── topical-limerick/
+│   ├── factory-audit/
 │   │   ├── .claude-plugin/
 │   │   │   └── plugin.json       # Plugin metadata
 │   │   └── skills/
-│   │       └── topical-limerick/
+│   │       └── factory-audit/
 │   │           └── SKILL.md      # Skill definition
+│   ├── supplychain-motivator/
+│   │   └── ...
+│   ├── car-orders-matching/
+│   │   └── ...
 │   ├── mailgun/
 │   │   └── ...
 │   └── google-chat-poster/
@@ -147,8 +178,8 @@ tanzu-platform-plugins/
 ### Testing Locally
 
 1. Clone this repository
-2. Add as a local marketplace: `/plugin marketplace add ./tanzu-platform-plugins`
-3. Install a plugin: `/plugin install topical-limerick@tanzu-platform-plugins`
+2. Add as a local marketplace: `/plugin marketplace add ./agent-skills`
+3. Install a plugin: `/plugin install factory-audit@agent-skills`
 4. Test the plugin functionality
 
 ### Contributing
@@ -163,27 +194,22 @@ To add more plugins to this marketplace:
 
 ## Use Cases
 
-**Cloud Foundry Governance:**
-- Audit CF spaces for compliance with organizational standards
-- Identify configuration drift across applications
-- Monitor deployment hygiene and detect stale applications
-- Enforce memory allocation policies across environments
+**Factory Operations:**
+- Audit manufacturing stage health and flag stages below threshold
+- Check maintenance document for expired warranty items
+- Validate factory capacity before accepting new car orders
+- Run combined factory + supply chain checks in a single prompt
 
-**Development & Operations:**
-- Automate deployment notifications via email or Google Chat
-- Send build status updates to team channels
-- Notify stakeholders of system events
-- Integrate CI/CD pipelines with team communication tools
+**Car Production:**
+- Generate and evaluate random car orders against factory readiness
+- Gate order acceptance on real-time manufacturing stage health
+- Confirm capacity before committing to painting and production
 
-**Team Communication:**
-- Quickly send formatted emails without leaving your development environment
-- Post updates to Google Chat Spaces from Claude Code
-- Automate routine notifications and reminders
-
-**Creative & Content:**
-- Generate entertaining limericks for technical topics
-- Create memorable content for presentations and documentation
-- Add humor to technical discussions and social media
+**Team Communication & Reporting:**
+- Post factory audit results directly to Google Chat
+- Send supply chain status updates via email or Google Chat
+- Aggregate results from multiple skills into one formatted message
+- Automate routine operational notifications without leaving Claude Code
 
 ## 🛠️ Marketplace Management
 
@@ -194,12 +220,12 @@ To add more plugins to this marketplace:
 
 ### Update marketplace metadata
 ```bash
-/plugin marketplace update tanzu-platform-plugins
+/plugin marketplace update agent-skills
 ```
 
 ### Remove marketplace
 ```bash
-/plugin marketplace remove tanzu-platform-plugins
+/plugin marketplace remove agent-skills
 ```
 
 ## 📋 Plugin Management
@@ -211,13 +237,13 @@ To add more plugins to this marketplace:
 
 ### Enable/disable plugin
 ```bash
-/plugin enable topical-limerick@tanzu-platform-plugins
-/plugin disable topical-limerick@tanzu-platform-plugins
+/plugin enable factory-audit@agent-skills
+/plugin disable factory-audit@agent-skills
 ```
 
 ### Uninstall plugin
 ```bash
-/plugin uninstall topical-limerick@tanzu-platform-plugins
+/plugin uninstall factory-audit@agent-skills
 ```
 
 ## 🔗 Resources
@@ -230,11 +256,13 @@ To add more plugins to this marketplace:
 
 MIT License - See plugin manifests for individual plugin licenses
 
-## 👤 Author
+## 👤 Authors
 
-**Corby**
+**Dekel Tankel** — factory-audit, supplychain-motivator, car-orders-matching
+
+**Corby Page** — mailgun, google-chat-poster
 
 ---
 
-**Built for Claude Code** - Extend your AI development experience with creative writing capabilities!
+**Built for Claude Code** - Extend your AI development experience with factory and operations automation!
 
