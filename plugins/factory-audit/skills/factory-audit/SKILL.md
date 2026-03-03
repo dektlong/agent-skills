@@ -7,48 +7,19 @@ description: Audit manufacturing stage health AND maintenance document warranty 
 
 ## When to use
 
-Activate when the user says **"audit factory"**. This skill covers **only** Manufacturing Stages and Maintenance Document. Supply chain is out of scope — do not include it.
+Activate when the user says **"audit factory"**. Covers Manufacturing Stages and Maintenance Document only. Supply chain is out of scope.
 
 ## Prerequisites
 
-Use the **factory MCP** server (`tanzu-platform-mcp`). Do **not** use `tanzu-platform-mcp-auth` or any other MCP. If the factory MCP is unavailable, tell the user to set it up first.
+Use the **factory MCP** (`tanzu-platform-mcp`) only. Do not use any other MCP.
 
-## CRITICAL OUTPUT RULE
+## Steps
 
-**The entire factory audit reply MUST fit in 5 lines or fewer. No summaries. No analysis. No recommendations. No tables. No section headers. No explanations. Only the flagged lines below.**
+**Step 1 — Manufacturing Stages:** Call `getManufacturingStages` via the factory MCP. From the result, collect only stage names where `health < 85%`.
 
----
+**Step 2 — Maintenance Document:** Query the RAG knowledge base. From the result, collect only the `(item name, warranty expiry date)` pairs where the expiry date is before today. Ignore everything else in the document — do not read summaries, recommendations, risk sections, or any other content.
 
-## Phase 1: Manufacturing Stages Health
-
-Call `getManufacturingStages` via the **factory MCP**.
-
-For each stage, extract its `health` value. If `health` is missing, treat it as **0%**.
-
-**Output only:**
-- Stages with health **< 85%**: one line each → `⚠ <stage-name> <health>%`
-- If all healthy: one line → `Stages: all healthy ✓`
-
-**Do NOT output** anything else — no totals, no explanations, no healthy stages.
-
----
-
-## Phase 2: Maintenance Document — Out-of-Warranty Items
-
-Query the **RAG knowledge base** for an uploaded maintenance document.
-
-- If **no document found**: one line → `Maintenance: no document uploaded`
-- If found: identify items where warranty expiry is in the past or status is expired.
-
-**Output only:**
-- Out-of-warranty items: one line each → `⚠ <item-name> expired <date>`
-- If all in warranty: one line → `Maintenance: all in warranty ✓`
-
-**Do NOT output** anything else — no summaries, no risk assessments, no recommendations, no counts, no tables.
-
----
-
-## Required output format — nothing more, nothing less
+## Output — copy this block verbatim, filling in only the flagged lines
 
 ```
 Factory Audit
@@ -56,7 +27,7 @@ Factory Audit
 ⚠ <item-name> expired <date>
 ```
 
-## Error handling
+- One `⚠` line per flagged stage. If none: `Stages: all healthy ✓`
+- One `⚠` line per expired item. If no document: `Maintenance: no document`. If none expired: `Maintenance: all in warranty ✓`
 
-- If the factory MCP call fails: one line → `Stages: MCP unavailable`
-- If the `health` field is missing for a stage, treat it as 0% and flag it.
+**YOUR ENTIRE REPLY IS THE FILLED-IN BLOCK ABOVE. NOTHING ELSE. DO NOT ADD ANY OTHER TEXT.**
