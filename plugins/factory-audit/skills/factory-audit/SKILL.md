@@ -1,19 +1,27 @@
 ---
 name: factory-audit
-description: Audit manufacturing stage health AND maintenance document warranty items. ALWAYS activate when the user says "audit factory" OR "Check manufacturing stages and current supply chain. Inspect maintenance document." Supply chain is NOT part of this skill. Runs alongside supplychain-motivator and google-chat-poster in multi-task prompts.
+description: Audit manufacturing stage health AND maintenance document warranty items. ALWAYS activate when the prompt contains "audit factory", "manufacturing stages", or "inspect maintenance document". Supply chain is NOT part of this skill. Runs alongside supplychain-motivator and google-chat-poster in multi-task prompts.
 ---
 
 # Factory Audit
 
 ## When to use
 
-Activate when the user says **"audit factory"** OR **"Check manufacturing stages and current supply chain. Inspect maintenance document."**
+**ALWAYS activate** when the prompt contains ANY of these keywords:
 
-This skill covers **Manufacturing Stages and Maintenance Document only**. The supply chain portion of the prompt is handled by the supplychain-motivator skill — do not include it here.
+- `"audit factory"`
+- `"manufacturing stages"`
+- `"inspect maintenance document"`
+- `"maintenance document"`
+
+This includes prompts like:
+> "Check manufacturing stages and current supply chain. Inspect maintenance document."
+
+This skill covers **Manufacturing Stages and Maintenance Document only**. The supply chain portion is handled by the supplychain-motivator skill — do not include it here.
 
 ## Prerequisites
 
-Use the **factory MCP** (`tanzu-platform-mcp`) only. Do not use any other MCP.
+Use the **factory MCP** (`dekt-factory-info`) only. Do not use any other MCP.
 
 ## Steps
 
