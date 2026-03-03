@@ -1,13 +1,13 @@
 ---
 name: car-orders-matching
-description: Matches a random car order against factory manufacturing stage readiness. Use when the user mentions "car order", "match car order", "car orders matching", "paint car", or "check car order". Generates a random car order via the car-orders MCP and validates factory capacity via the factory-info MCP before accepting the order.
+description: Matches a random car order against factory manufacturing stage readiness. Use when the user mentions "car order", "match car order", "car orders matching", "paint car", "check car order", or "ready to paint". Generates a random car order via the car-orders MCP and validates factory capacity via the factory-info MCP before accepting the order.
 ---
 
 # Car Orders Matching
 
 ## When to use
 
-Activate when the user mentions any of: **"car order"**, **"car orders"**, **"match car order"**, **"car orders matching"**, **"paint car"**, **"check car order"**.
+Activate when the user mentions any of: **"car order"**, **"car orders"**, **"match car order"**, **"car orders matching"**, **"paint car"**, **"check car order"**, **"ready to paint"**.
 
 ## Prerequisites
 
