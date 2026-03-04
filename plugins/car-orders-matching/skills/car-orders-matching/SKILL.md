@@ -29,67 +29,35 @@ Activate immediately when the user message contains any of:
 
 ## Prerequisites
 
-- **car-orders MCP** (`dekt-car-orders`): generates random car orders.
-- **factory-info MCP** (`dekt-factory-info`): provides manufacturing stage health data.
+- **car-orders MCP** (`factory-orders`): generates random car orders.
+- **factory-info MCP** (`manufacturing-data`): provides manufacturing stage health data.
 
 ## Steps
 
-**Step 1 — Generate a random car order:** Call `getRandomCarOrder` via the `dekt-car-orders` MCP. The MCP may return a single concatenated string. **Parse it into individual fields** — do NOT output the raw MCP string.
+**Step 1 — Generate a random car order:** Call `getRandomCarOrder` via the `factory-orders` MCP. Record the full order details returned.
 
-**Step 2 — Check manufacturing stages:** Call `getManufacturingStages` via the `dekt-factory-info` MCP. Check if **any** stage has a health value **below 80%**.
+**Step 2 — Check manufacturing stages:** Call `getManufacturingStages` via the `manufacturing-data` MCP. Check if **any** stage has a health value **below 80%**.
 
 **Step 3 — Decision:**
 
 - **All stages ≥ 80%** → use the "factory ready" output block below.
 - **Any stage < 80%** → use the "factory not ready" output block below.
 
-## Color emoji mapping
-
-For **Ext. Color** and **Int. Color**, append a matching color emoji after the value:
-
-| Color word (case-insensitive) | Emoji |
-|-------------------------------|-------|
-| red / crimson / scarlet       | 🔴    |
-| blue / navy / sapphire        | 🔵    |
-| green / emerald / forest      | 🟢    |
-| yellow / gold / amber         | 🟡    |
-| orange                        | 🟠    |
-| white / pearl / ivory / cream | ⚪    |
-| black / obsidian / onyx       | ⚫    |
-| grey / gray / silver          | 🩶    |
-| brown / bronze / copper       | 🟤    |
-| pink / rose / magenta         | 🩷    |
-| purple / violet / lavender    | 🟣    |
-| any other color               | 🎨    |
-
 ## Output format
-
-**NEVER echo the raw MCP string. Always reconstruct the output using the markdown template below.**
 
 **When factory is ready (all stages ≥ 80%):**
 
-### 🚗 Car Order #<order-id>
+```
+Car Order
+<full car order details from Step 1>
 
-- **Vehicle:** <value>
-- **Ext. Color:** <value> <color-emoji>
-- **Int. Color:** <value> <color-emoji>
-- **Engine:** <value>
-- **Transmission:** <value>
-- **Packages:** <value>
-- **Accessories:** <value>
-- **Base Price:** <value>
-- **Total Price:** <value>
-- **Est. Delivery:** <value>
-- **Status:** <value>
-
-✅ We are ready to paint your car.
-
----
+We are ready to paint your car.
+```
 
 **When factory is not ready (any stage < 80%):**
 
-❌ The factory stages cannot deal with this order at this time.
+```
+The factory stages cannot deal with this order at this time.
+```
 
----
-
-**YOUR ENTIRE REPLY IS THE FILLED-IN BLOCK ABOVE. NOTHING ELSE. NO EXTRA TEXT.**
+**YOUR ENTIRE REPLY IS THE FILLED-IN BLOCK ABOVE. NOTHING ELSE. NO TABLES. NO SUMMARIES. NO NEXT STEPS. NO EMOJIS. DO NOT ADD ANY OTHER TEXT.**
