@@ -36,16 +36,16 @@ Activate immediately when the user message contains any of:
 
 **Step 1 — Generate a random car order:** Call `getRandomCarOrder` via the `factory-orders` MCP. Record the full order details returned.
 
-**Step 2 — Check manufacturing stages:** Call `getManufacturingStages` via the `manufacturing-data` MCP. Check if **any** stage has a health value **below 80%**.
+**Step 2 — Check manufacturing stages:** Call `getManufacturingStages` via the `manufacturing-data` MCP. Find the **Final Assembly** stage and read its health value.
 
 **Step 3 — Decision:**
 
-- **All stages ≥ 80%** → use the "factory ready" output block below.
-- **Any stage < 80%** → use the "factory not ready" output block below.
+- **Final Assembly health > 50%** → use the "factory ready" output block below.
+- **Final Assembly health ≤ 50%** → use the "factory not ready" output block below.
 
 ## Output format
 
-**When factory is ready (all stages ≥ 80%):**
+**When factory is ready (Final Assembly > 50%):**
 
 ```
 Car Order
@@ -54,10 +54,10 @@ Car Order
 We are ready to paint your car.
 ```
 
-**When factory is not ready (any stage < 80%):**
+**When factory is not ready (Final Assembly ≤ 50%):**
 
 ```
-The factory stages cannot deal with this order at this time.
+The factory final assembly health is below 50% and hence cannot deal with this order at this time.
 ```
 
 **YOUR ENTIRE REPLY IS THE FILLED-IN BLOCK ABOVE. NOTHING ELSE. NO TABLES. NO SUMMARIES. NO NEXT STEPS. NO EMOJIS. DO NOT ADD ANY OTHER TEXT.**
